@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# Артефакти, що відтворюються запуском ноутбука
+practical01/data/*.joblib
+practical01/data/*.npz
+
+# ОС / редактори
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
