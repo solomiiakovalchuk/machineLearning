@@ -57,8 +57,8 @@ Cancer, `diagnosis`) та `ml_guide.md`: там прямо сказано, що 
 змістило б вибірку.
 
 **Verification.** `train[train.area_se > upper]["diagnosis"].value_counts()` →
-`{0: 49}`. Boxplot у лог-шкалі ([`figures/03_boxplots_outliers.png`]) + порівняння
-групових середніх ([`figures/08_features_by_class.png`]).
+`{0: 49}`. Boxplot у лог-шкалі ([`figures/03_boxplots_outliers.png`](figures/03_boxplots_outliers.png)) + порівняння
+групових середніх ([`figures/08_features_by_class.png`](figures/08_features_by_class.png)).
 
 **Замість видалення:** обрано масштабування, стійке до хвостів; сильна асиметрія
 `_se` зафіксована як гіпотеза `log1p` для ЛР № 1.
