@@ -23,6 +23,8 @@
 
 | Пункт | Значення |
 |---|---|
+| Назва набору | **Breast Cancer Wisconsin (Diagnostic)** — WDBC |
+| Джерело | UCI ML Repository, [dataset/17](https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic); у роботі завантажується вбудованою копією `sklearn.datasets.load_breast_cancer` (див. [`data/README.md`](data/README.md)) |
 | Предметна область | медична діагностика: цитологія новоутворень молочної залози |
 | Що описує рядок | одне новоутворення / один пацієнт (569 об'єктів) |
 | Ознаки | 30 числових: 10 характеристик клітинного ядра × 3 агрегати (`_mean`, `_se`, `_worst`) |
