@@ -6,6 +6,21 @@
 результатами). Рисунки продубльовано в [`figures/`](figures/). Журнал використання ШІ —
 [`AI_USAGE.md`](AI_USAGE.md). Джерело даних — [`data/README.md`](data/README.md).
 
+### Відтворення
+
+```bash
+python -m venv .venv
+# Windows:  .venv\Scripts\activate
+# Linux/macOS:  source .venv/bin/activate
+pip install -r ../requirements.txt
+
+jupyter nbconvert --to notebook --execute --inplace notebook/practical01.ipynb
+```
+
+Набір даних завантажувати окремо не потрібно — він вбудований у `scikit-learn`
+(`load_breast_cancer`). Усі випадкові операції зафіксовано `random_state=42`, тож
+рисунки в [`figures/`](figures/) перегенеровуються байт-у-байт.
+
 ---
 
 ## 1. Тема та мета роботи
@@ -135,6 +150,13 @@ $[Q_1-1.5\,\mathrm{IQR};\; Q_3+1.5\,\mathrm{IQR}]$.
 Кластер `radius / perimeter / area` (у всіх трьох агрегатах) майже дублює сам себе:
 `r(radius_mean, perimeter_mean) = 0.998`. При $|r|>0.95$ надлишковими є 7 ознак.
 
+**Найсильніші від'ємні зв'язки між ознаками** слабкі: `radius_mean` —
+`fractal_dimension_mean` (−0.30), `area_mean` — `fractal_dimension_mean` (−0.27),
+`smoothness_se` — `radius_worst` (−0.23). Від'ємних пар лише **49 із 900**: майже
+всі ознаки зростають разом, бо описують один і той самий об'єкт. Фрактальна
+розмірність — єдина, що поводиться протилежно до розміру ядра (дрібні складні
+контури дають більшу розмірність).
+
 **Найсильніші лінійні предиктори** (Пірсон із `diagnosis`, знак «−», бо 1 = benign):
 
 | Ознака | `r` |
@@ -215,6 +237,9 @@ $[Q_1-1.5\,\mathrm{IQR};\; Q_3+1.5\,\mathrm{IQR}]$.
 
 * розмірність: train `(455, 30)`, test `(114, 30)` — кількість ознак не змінилась
   (кодування не застосовувалось);
+* назви ознак після препроцесингу: `num__radius_mean` … `num__fractal_dimension_worst`
+  — префікс `num__` додає `ColumnTransformer`, після його зняття перелік збігається
+  з вихідними 30 ознаками;
 * `NaN` після перетворення: 0 і в train, і в test;
 * train: `max|mean| = 0.0`, `min std = 1.0` (стандартизація коректна);
 * test: `mean ≈ 0.03` — і **не має** бути рівно 0, бо параметри взяті з train
