@@ -1,0 +1,61 @@
+{
+  "policy_id": "breast-fna-triage",
+  "version": "1.0.0",
+  "created": "2026-09-29",
+  "random_state": 42,
+  "score": {
+    "name": "raw_logreg_proba",
+    "semantics": "Оцінка P(malignant | ознаки): predict_proba[:, 1] логістичної регресії (StandardScaler -> LogisticRegression, C=1.0). Додаткове sigmoid/isotonic калібрування НЕ застосовується (за OOF не покращило Brier/log-loss, розділ 8).",
+    "positive_class": "malignant (y=1)",
+    "range": [
+      0.0,
+      1.0
+    ],
+    "comparison_rule": "score >= threshold -> дія вищої зони"
+  },
+  "actions": {
+    "low": "standard_followup",
+    "middle": "manual_review",
+    "high": "biopsy"
+  },
+  "action_descriptions": {
+    "standard_followup": "планове спостереження, контрольне УЗД через ~6 місяців",
+    "manual_review": "повторна FNA та розгляд консиліумом",
+    "biopsy": "направлення на core-needle біопсію та консультацію онколога"
+  },
+  "active_variant": "single_threshold",
+  "policy_variants": {
+    "single_threshold": {
+      "threshold_low": 0.324,
+      "threshold_high": 0.324,
+      "note": "однопорогова політика: зона manual_review порожня"
+    },
+    "three_zone": {
+      "threshold_low": 0.09,
+      "threshold_high": 0.324,
+      "note": "кандидат: зона manual_review = [t_low, t_high); ефективність перегляду невідома"
+    }
+  },
+  "cost_scenario": {
+    "name": "realistic",
+    "c_fp": 1.0,
+    "c_fn": 10.0,
+    "ratio_cfn_cfp": 10.0,
+    "c_manual_review": 0.3,
+    "unit": "1 умовна одиниця = вартість однієї зайвої біопсії",
+    "nature": "сценарні (експертні) припущення навчального завдання, не фактичні вартості"
+  },
+  "constraint": {
+    "type": "hard_capacity_quota",
+    "action": "biopsy",
+    "max_share": 0.4,
+    "implementation": "k = floor(max_share * n_batch); якщо біопсій > k, лишаються k найвищих балів (ties: менший індекс першим)",
+    "overflow": "надлишок переводиться на дію manual_review і логується"
+  },
+  "parameter_source": {
+    "predictions": "OOF-прогнози на D_train: StratifiedKFold(5, shuffle=True, random_state=42)",
+    "score_decision": "вибір бала за OOF Brier/log-loss/bootstrap (розділ 8), не за test",
+    "split": "train_test_split(test_size=0.2, stratify=target, random_state=42), як у практичній № 1",
+    "selection_rule": "мінімум C(t) за реалістичним сценарієм серед порогів із q(t) <= max_share; при ties — середина плато"
+  }
+}
