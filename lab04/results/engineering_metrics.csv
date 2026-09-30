@@ -1,0 +1,4 @@
+model,fit_s (median),predict_1000_ms (median),pickle_KB,trees/iterations,total_nodes,local explanation
+tree_controlled,0.007926099991891533,1.2870999635197222,3.28125,1,13,повний шлях правил (decision_path)
+random_forest,0.6361231000046246,110.06879998603836,926.0400390625,300,10680,частка голосів дерев; ICE; permutation (глобально)
+hist_gb,0.20194210001500323,9.130800026468933,247.19921875,200,2886,ICE/PDP; вбудованого шляху немає

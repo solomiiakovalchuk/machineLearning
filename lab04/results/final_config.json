@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-30",
+  "dataset": "sklearn.datasets.load_breast_cancer (569x30); positive class y=1 is malignant (y = 1 - sklearn target)",
+  "split": {
+    "test_size": 0.2,
+    "stratify": "original sklearn target",
+    "random_state": 42
+  },
+  "primary_metric": "macro F1",
+  "secondary_metric": "recall (malignant)",
+  "pipeline": "SimpleImputer(strategy='median') -> model; no scaling",
+  "model_name": "RandomForestClassifier",
+  "params": {
+    "n_estimators": 300,
+    "max_features": "sqrt",
+    "min_samples_leaf": 1,
+    "random_state": 42,
+    "n_jobs": -1
+  },
+  "random_state": 42,
+  "selection_rule": {
+    "ensemble_candidate": "RF, unless HGB mean macro F1 exceeds RF mean by more than RF fold std",
+    "choose_ensemble_if": "(a: mean F1 gain > tree fold std) OR (b: prediction disagreement >= 3x lower AND mean F1 not lower), AND (c: predict 1000 < 1 s and pickle < 50 MB)",
+    "a": true,
+    "b": true,
+    "c": true
+  },
+  "cv_evidence": {
+    "outer_cv": "RepeatedStratifiedKFold(5 x 4, random_state=42), identical folds for all models",
+    "inner_cv_for_tree": "StratifiedKFold(4, shuffle=True, random_state=17)",
+    "macro_f1_mean_std": {
+      "tree_controlled": [
+        0.9187,
+        0.0325
+      ],
+      "random_forest": [
+        0.9589,
+        0.0167
+      ],
+      "hist_gb": [
+        0.9646,
+        0.0187
+      ]
+    },
+    "mean_prediction_disagreement": {
+      "tree_controlled": 0.0356,
+      "random_forest": 0.0094,
+      "hist_gb": 0.0126
+    }
+  },
+  "controlled_tree_params_stage3": {
+    "max_depth": 3,
+    "min_samples_leaf": 16
+  },
+  "rationale": "Random Forest chosen by the pre-registered rule before opening the test set: delta macro F1 (ensemble - tree) = +0.040 vs tree fold std 0.033; prediction disagreement ratio tree/ensemble = 3.8x; engineering cost acceptable."
+}

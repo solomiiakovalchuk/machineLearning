@@ -15,3 +15,6 @@ practical01/data/*.npz
 Thumbs.db
 .vscode/
 .idea/
+
+# Серіалізовані моделі відтворюються запуском ноутбука
+lab04/results/*.joblib
