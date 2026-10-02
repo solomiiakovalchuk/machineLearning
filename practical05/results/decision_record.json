@@ -1,0 +1,166 @@
+{
+  "written_before_test_opened": true,
+  "protocol": {
+    "split": "train_test_split(test_size=0.2, stratify, random_state=42)",
+    "cv": {
+      "type": "StratifiedKFold",
+      "n_splits": 5,
+      "shuffle": true,
+      "random_state": 42
+    },
+    "threshold": 0.5,
+    "n_train": 455,
+    "n_test": 114,
+    "candidates": [
+      "logreg",
+      "tree",
+      "knn",
+      "svm_rbf",
+      "random_forest",
+      "hist_gb"
+    ],
+    "candidates_fixed": true
+  },
+  "scenarios": {
+    "realtime_workstation": {
+      "config": "configs/realtime_workstation.json",
+      "config_version": "1.0.0",
+      "primary": {
+        "model": "logreg",
+        "score": 0.6185877501003367,
+        "file": "selected_realtime_workstation.joblib"
+      },
+      "backup": {
+        "model": "svm_rbf",
+        "score": 0.4632957945732641,
+        "file": "backup_realtime_workstation.joblib"
+      },
+      "score_gap": 0.15529195552707264,
+      "rejected": [
+        {
+          "model": "hist_gb",
+          "reasons": [
+            "cv_recall_mean=0.9471 < min 0.95",
+            "latency_p95_ms_b1=12.19 > max 10.0"
+          ]
+        },
+        {
+          "model": "knn",
+          "reasons": [
+            "cv_recall_mean=0.9294 < min 0.95"
+          ]
+        },
+        {
+          "model": "random_forest",
+          "reasons": [
+            "latency_p95_ms_b1=91.94 > max 10.0"
+          ]
+        },
+        {
+          "model": "tree",
+          "reasons": [
+            "cv_recall_mean=0.9353 < min 0.95"
+          ]
+        }
+      ]
+    },
+    "batch_second_reading": {
+      "config": "configs/batch_second_reading.json",
+      "config_version": "1.0.0",
+      "primary": {
+        "model": "logreg",
+        "score": 0.8283866754237564,
+        "file": "selected_batch_second_reading.joblib"
+      },
+      "backup": {
+        "model": "svm_rbf",
+        "score": 0.7776341595334014,
+        "file": "backup_batch_second_reading.joblib"
+      },
+      "score_gap": 0.05075251589035501,
+      "rejected": [
+        {
+          "model": "hist_gb",
+          "reasons": [
+            "cv_recall_mean=0.9471 < min 0.95"
+          ]
+        },
+        {
+          "model": "knn",
+          "reasons": [
+            "cv_recall_mean=0.9294 < min 0.95"
+          ]
+        },
+        {
+          "model": "tree",
+          "reasons": [
+            "cv_recall_mean=0.9353 < min 0.95",
+            "cv_f1_mean=0.9085 < min 0.94"
+          ]
+        }
+      ]
+    }
+  },
+  "expected_primary_metrics": {
+    "model": "logreg",
+    "main_metric": "f1 (поріг 0.5)",
+    "f1": {
+      "cv_mean": 0.970307600302638,
+      "cv_std": 0.0150847792326477,
+      "mean_pm_2std": [
+        0.9401380418373426,
+        1.0
+      ],
+      "fold_min_max": [
+        0.953846153846154,
+        0.9855072463768116
+      ]
+    },
+    "recall": {
+      "cv_mean": 0.9647058823529412,
+      "cv_std": 0.0322189739708921,
+      "mean_pm_2std": [
+        0.900267934411157,
+        1.0
+      ],
+      "fold_min_max": [
+        0.9117647058823528,
+        1.0
+      ]
+    },
+    "note": "std - розкид F1/recall між фолдами по 91 зразку; тест (114 зразків) має порівнянний масштаб шуму, тому діапазон mean ± 2·std",
+    "latency_p95_ms_b1_expected": {
+      "pooled": 4.06818,
+      "per_pass_min_max": [
+        2.1287,
+        4.5605
+      ],
+      "machine_dependent": true
+    }
+  },
+  "known_risks": [
+    "Затримка вимірювалась на одній машині (i5-1035G1, 1 потік) і шумна: p95 різних проходів різниться від 1.25 до 2.14 раза; для hist_gb вона на межі 10 мс (проходи 13.96 / 8.05 / 11.57 мс), для logreg і svm_rbf межа не порушується в жодному проході.",
+    "Межа recall 0.95 вирішується 1-2 об'єктами з 170 позитивних у CV: hist_gb пропускає 9 (recall 0.9471), svm_rbf і random_forest - по 7, logreg - 6.",
+    "Тестова частина вже використовувалась у ПР 1-4, тому вона не є свіжою для курсу в цілому; в цій роботі до розділу 13 її не відкривали.",
+    "Ваги й орієнтири нормалізації - сценарні припущення; рішення стійке до ваг лише тому, що logreg домінує за Парето в обох сценаріях.",
+    "Різниці F1 між другим і п'ятим місцем (<0.01) менші за розкид між фолдами; відрив logreg від svm_rbf за F1 - 0.0115 при std ≈ 0.015-0.019.",
+    "Навчальний набір (569 зразків, один центр); це не клінічна валідація."
+  ],
+  "reselection_conditions": [
+    "Зміна заліза/середовища виконання (CPU, кількість потоків, версія Python/scikit-learn) - повторити run_benchmark.py і select_model.py.",
+    "Зміна обмежень або ваг у конфігурації (нова версія конфігурації) або нова ціна помилок.",
+    "Поява нового кандидата або зміна гіперпараметрів кандидатів.",
+    "Дрейф даних (інший прилад/протокол) або нова навчальна вибірка; суттєве падіння recall у моніторингу.",
+    "Якщо p95 затримки обраної моделі на цільовому залізі наближається до 10 мс (сценарій 1) - перевибір."
+  ],
+  "frozen_inputs_sha256": {
+    "configs/realtime_workstation.json": "fbc90e433803136887d35771b836267929d4be52c48070bfa6164d5133f72699",
+    "configs/batch_second_reading.json": "fd585610da69267105597acfd5d15ae874656ebba0a9e2401dedeb6294319bc7",
+    "results/benchmark_results.csv": "910d81a561db3f25b84c4dc7d36f7a482ce41fa71c9395a97bc38acaf21d192e",
+    "results/fold_results.csv": "44d7b87ec3a480c1ab73faaaa4d3b08b5e691097b95b0d8c32438ed577c283b9",
+    "results/selected_realtime_workstation.joblib": "8a7d2e2e0212edcb1cc9c9095cadf6d041a1c87b6e8641e59563934cf393ceed",
+    "results/backup_realtime_workstation.joblib": "6c01ad728b387cbebfe4bdfd79b701c62eff4009fdef7fe25c0f4ef472cb9492",
+    "results/selected_batch_second_reading.joblib": "8a7d2e2e0212edcb1cc9c9095cadf6d041a1c87b6e8641e59563934cf393ceed",
+    "results/backup_batch_second_reading.joblib": "6c01ad728b387cbebfe4bdfd79b701c62eff4009fdef7fe25c0f4ef472cb9492"
+  }
+}

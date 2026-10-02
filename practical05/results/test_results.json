@@ -1,0 +1,41 @@
+{
+  "model": "logreg",
+  "scenario_config_versions": {
+    "realtime_workstation": "1.0.0",
+    "batch_second_reading": "1.0.0"
+  },
+  "threshold": 0.5,
+  "n_test": 114,
+  "n_positive": 42,
+  "confusion_matrix": {
+    "TN": 71,
+    "FP": 1,
+    "FN": 1,
+    "TP": 41
+  },
+  "metrics": {
+    "f1": 0.9761904761904762,
+    "recall": 0.9761904761904762,
+    "precision": 0.9761904761904762,
+    "roc_auc": 0.9953703703703705,
+    "balanced_accuracy": 0.9811507936507937
+  },
+  "recall_wilson_95": [
+    0.8767879842623335,
+    0.9957845958655674
+  ],
+  "precision_wilson_95": [
+    0.8767879842623335,
+    0.9957845958655674
+  ],
+  "cv_expectation_from": "results/decision_record.json",
+  "within_mean_pm_2std": {
+    "f1": true,
+    "recall": true,
+    "precision": true,
+    "roc_auc": true,
+    "balanced_accuracy": true
+  },
+  "opened_once": true,
+  "weights_limits_candidates_changed_after_test": false
+}

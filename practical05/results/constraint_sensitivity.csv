@@ -1,0 +1,71 @@
+scenario,sweep,recall_min,latency_max,n_eligible,eligible,winner,backup,gap
+realtime_workstation,recall_min,0.92,10.0,4,"logreg, svm_rbf, knn, tree",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min,0.925,10.0,4,"logreg, svm_rbf, knn, tree",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min,0.93,10.0,3,"logreg, svm_rbf, tree",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min,0.935,10.0,3,"logreg, svm_rbf, tree",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min,0.94,10.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min,0.945,10.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min,0.95,10.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min,0.955,10.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min,0.96,10.0,1,logreg,logreg,—,
+realtime_workstation,recall_min,0.965,10.0,0,,—,—,
+realtime_workstation,recall_min,0.97,10.0,0,,—,—,
+batch_second_reading,recall_min,0.92,200.0,5,"logreg, svm_rbf, hist_gb, knn, random_forest",logreg,svm_rbf,0.05075251589035501
+batch_second_reading,recall_min,0.925,200.0,5,"logreg, svm_rbf, hist_gb, knn, random_forest",logreg,svm_rbf,0.05075251589035501
+batch_second_reading,recall_min,0.93,200.0,4,"logreg, svm_rbf, hist_gb, random_forest",logreg,svm_rbf,0.05075251589035501
+batch_second_reading,recall_min,0.935,200.0,4,"logreg, svm_rbf, hist_gb, random_forest",logreg,svm_rbf,0.05075251589035501
+batch_second_reading,recall_min,0.94,200.0,4,"logreg, svm_rbf, hist_gb, random_forest",logreg,svm_rbf,0.05075251589035501
+batch_second_reading,recall_min,0.945,200.0,4,"logreg, svm_rbf, hist_gb, random_forest",logreg,svm_rbf,0.05075251589035501
+batch_second_reading,recall_min,0.95,200.0,3,"logreg, svm_rbf, random_forest",logreg,svm_rbf,0.05075251589035501
+batch_second_reading,recall_min,0.955,200.0,3,"logreg, svm_rbf, random_forest",logreg,svm_rbf,0.05075251589035501
+batch_second_reading,recall_min,0.96,200.0,1,logreg,logreg,—,
+batch_second_reading,recall_min,0.965,200.0,0,,—,—,
+batch_second_reading,recall_min,0.97,200.0,0,,—,—,
+realtime_workstation,latency_max,0.95,4.0,0,,—,—,
+realtime_workstation,latency_max,0.95,5.0,1,logreg,logreg,—,
+realtime_workstation,latency_max,0.95,6.0,1,logreg,logreg,—,
+realtime_workstation,latency_max,0.95,8.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,latency_max,0.95,10.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,latency_max,0.95,12.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,latency_max,0.95,15.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,latency_max,0.95,20.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.92,4.0,0,,—,—,
+realtime_workstation,recall_min x latency_max,0.92,5.0,2,"logreg, tree",logreg,tree,0.3159228225262379
+realtime_workstation,recall_min x latency_max,0.92,6.0,3,"logreg, knn, tree",logreg,knn,0.19246931448806204
+realtime_workstation,recall_min x latency_max,0.92,8.0,4,"logreg, svm_rbf, knn, tree",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.92,10.0,4,"logreg, svm_rbf, knn, tree",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.92,12.0,4,"logreg, svm_rbf, knn, tree",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.92,15.0,5,"logreg, svm_rbf, knn, hist_gb, tree",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.92,20.0,5,"logreg, svm_rbf, knn, hist_gb, tree",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.94,4.0,0,,—,—,
+realtime_workstation,recall_min x latency_max,0.94,5.0,1,logreg,logreg,—,
+realtime_workstation,recall_min x latency_max,0.94,6.0,1,logreg,logreg,—,
+realtime_workstation,recall_min x latency_max,0.94,8.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.94,10.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.94,12.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.94,15.0,3,"logreg, svm_rbf, hist_gb",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.94,20.0,3,"logreg, svm_rbf, hist_gb",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.95,4.0,0,,—,—,
+realtime_workstation,recall_min x latency_max,0.95,5.0,1,logreg,logreg,—,
+realtime_workstation,recall_min x latency_max,0.95,6.0,1,logreg,logreg,—,
+realtime_workstation,recall_min x latency_max,0.95,8.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.95,10.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.95,12.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.95,15.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.95,20.0,2,"logreg, svm_rbf",logreg,svm_rbf,0.15529195552707264
+realtime_workstation,recall_min x latency_max,0.96,4.0,0,,—,—,
+realtime_workstation,recall_min x latency_max,0.96,5.0,1,logreg,logreg,—,
+realtime_workstation,recall_min x latency_max,0.96,6.0,1,logreg,logreg,—,
+realtime_workstation,recall_min x latency_max,0.96,8.0,1,logreg,logreg,—,
+realtime_workstation,recall_min x latency_max,0.96,10.0,1,logreg,logreg,—,
+realtime_workstation,recall_min x latency_max,0.96,12.0,1,logreg,logreg,—,
+realtime_workstation,recall_min x latency_max,0.96,15.0,1,logreg,logreg,—,
+realtime_workstation,recall_min x latency_max,0.96,20.0,1,logreg,logreg,—,
+realtime_workstation,recall_min x latency_max,0.97,4.0,0,,—,—,
+realtime_workstation,recall_min x latency_max,0.97,5.0,0,,—,—,
+realtime_workstation,recall_min x latency_max,0.97,6.0,0,,—,—,
+realtime_workstation,recall_min x latency_max,0.97,8.0,0,,—,—,
+realtime_workstation,recall_min x latency_max,0.97,10.0,0,,—,—,
+realtime_workstation,recall_min x latency_max,0.97,12.0,0,,—,—,
+realtime_workstation,recall_min x latency_max,0.97,15.0,0,,—,—,
+realtime_workstation,recall_min x latency_max,0.97,20.0,0,,—,—,
