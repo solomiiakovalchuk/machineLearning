@@ -1,0 +1,5 @@
+model,violations,n_violations
+hist_gb,cv_recall_mean=0.9471 < min 0.95; latency_p95_ms_b1=12.19 > max 10.0,2
+knn,cv_recall_mean=0.9294 < min 0.95,1
+random_forest,latency_p95_ms_b1=91.94 > max 10.0,1
+tree,cv_recall_mean=0.9353 < min 0.95,1

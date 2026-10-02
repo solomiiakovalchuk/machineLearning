@@ -1,0 +1,43 @@
+{
+  "scenario": "realtime_workstation",
+  "config_version": "1.0.0",
+  "config_path": "configs/realtime_workstation.json",
+  "primary": {
+    "model": "logreg",
+    "score": 0.6185877501003367,
+    "file": "selected_realtime_workstation.joblib"
+  },
+  "backup": {
+    "model": "svm_rbf",
+    "score": 0.4632957945732641,
+    "file": "backup_realtime_workstation.joblib"
+  },
+  "score_gap": 0.15529195552707264,
+  "rejected": [
+    {
+      "model": "hist_gb",
+      "reasons": [
+        "cv_recall_mean=0.9471 < min 0.95",
+        "latency_p95_ms_b1=12.19 > max 10.0"
+      ]
+    },
+    {
+      "model": "knn",
+      "reasons": [
+        "cv_recall_mean=0.9294 < min 0.95"
+      ]
+    },
+    {
+      "model": "random_forest",
+      "reasons": [
+        "latency_p95_ms_b1=91.94 > max 10.0"
+      ]
+    },
+    {
+      "model": "tree",
+      "reasons": [
+        "cv_recall_mean=0.9353 < min 0.95"
+      ]
+    }
+  ]
+}

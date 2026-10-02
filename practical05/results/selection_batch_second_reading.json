@@ -1,0 +1,37 @@
+{
+  "scenario": "batch_second_reading",
+  "config_version": "1.0.0",
+  "config_path": "configs/batch_second_reading.json",
+  "primary": {
+    "model": "logreg",
+    "score": 0.8283866754237564,
+    "file": "selected_batch_second_reading.joblib"
+  },
+  "backup": {
+    "model": "svm_rbf",
+    "score": 0.7776341595334014,
+    "file": "backup_batch_second_reading.joblib"
+  },
+  "score_gap": 0.05075251589035501,
+  "rejected": [
+    {
+      "model": "hist_gb",
+      "reasons": [
+        "cv_recall_mean=0.9471 < min 0.95"
+      ]
+    },
+    {
+      "model": "knn",
+      "reasons": [
+        "cv_recall_mean=0.9294 < min 0.95"
+      ]
+    },
+    {
+      "model": "tree",
+      "reasons": [
+        "cv_recall_mean=0.9353 < min 0.95",
+        "cv_f1_mean=0.9085 < min 0.94"
+      ]
+    }
+  ]
+}

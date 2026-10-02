@@ -1,0 +1,25 @@
+{
+  "scenario": "realtime_workstation",
+  "version": "1.0.0",
+  "description": "Синхронна підказка на робочій станції цитолога: прогноз для одного зразка одразу після сегментації ядер; спільний CPU, 1 потік; модель постачається в пакеті оновлення ПЗ станції.",
+  "batch_size": 1,
+  "constraints": {
+    "cv_recall_mean": {"min": 0.95},
+    "latency_p95_ms_b1": {"max": 10.0},
+    "model_size_mb": {"max": 0.5}
+  },
+  "criteria": {
+    "cv_f1_mean":        {"direction": "maximize", "weight": 0.30, "worst": 0.90, "best": 1.00},
+    "cv_recall_mean":    {"direction": "maximize", "weight": 0.25, "worst": 0.95, "best": 1.00},
+    "latency_p95_ms_b1": {"direction": "minimize", "weight": 0.25, "worst": 10.0, "best": 1.0},
+    "model_size_mb":     {"direction": "minimize", "weight": 0.10, "worst": 0.5,  "best": 0.0},
+    "cv_f1_std":         {"direction": "minimize", "weight": 0.10, "worst": 0.05, "best": 0.0}
+  },
+  "anchor_sources": {
+    "cv_f1_mean": "worst 0.90 = рівень окремого дерева з ЛР № 4 (≈0.91): гірше за просте дерево немає сенсу; best 1.0 = теоретична межа.",
+    "cv_recall_mean": "worst 0.95 = жорстка межа сценарію (збігається з обмеженням на recall); best 1.0 = теоретична межа.",
+    "latency_p95_ms_b1": "worst 10 мс = межа обмеження на p95 для одного зразка; best 1 мс = порядок накладних витрат одного виклику sklearn Pipeline, швидше практично недосяжно.",
+    "model_size_mb": "worst 0.5 МБ = межа обмеження на розмір пакета оновлення; best 0 = порожній файл.",
+    "cv_f1_std": "worst 0.05 = типовий розкид F1 між folds у ЛР № 4 (≈0.03) із запасом; best 0 = повна стабільність."
+  }
+}

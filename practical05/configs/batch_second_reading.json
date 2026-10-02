@@ -1,0 +1,24 @@
+{
+  "scenario": "batch_second_reading",
+  "version": "1.0.0",
+  "description": "Нічне пакетне повторне прочитання всіх зразків за день (пакети по 256) на сервері лабораторії; пріоритет якості, затримка некритична.",
+  "batch_size": 256,
+  "constraints": {
+    "cv_recall_mean": {"min": 0.95},
+    "cv_f1_mean": {"min": 0.94},
+    "latency_p95_ms_b256": {"max": 200.0},
+    "model_size_mb": {"max": 5.0}
+  },
+  "criteria": {
+    "cv_roc_auc_mean": {"direction": "maximize", "weight": 0.45, "worst": 0.95, "best": 1.00},
+    "cv_f1_mean":      {"direction": "maximize", "weight": 0.30, "worst": 0.90, "best": 1.00},
+    "cv_f1_std":       {"direction": "minimize", "weight": 0.15, "worst": 0.05, "best": 0.0},
+    "fit_time_s":      {"direction": "minimize", "weight": 0.10, "worst": 10.0, "best": 0.0}
+  },
+  "anchor_sources": {
+    "cv_roc_auc_mean": "worst 0.95 = нижня межа прийнятної якості ранжування для скринінгу; best 1.0 = теоретична межа.",
+    "cv_f1_mean": "worst 0.90 = рівень окремого дерева з ЛР № 4 (≈0.91); best 1.0 = теоретична межа.",
+    "cv_f1_std": "worst 0.05 = типовий розкид F1 між folds у ЛР № 4 (≈0.03) із запасом; best 0 = повна стабільність.",
+    "fit_time_s": "worst 10 с = бюджет щомісячного перенавчання; best 0 = миттєве навчання."
+  }
+}

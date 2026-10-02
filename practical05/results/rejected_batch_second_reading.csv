@@ -1,0 +1,4 @@
+model,violations,n_violations
+hist_gb,cv_recall_mean=0.9471 < min 0.95,1
+knn,cv_recall_mean=0.9294 < min 0.95,1
+tree,cv_recall_mean=0.9353 < min 0.95; cv_f1_mean=0.9085 < min 0.94,2
