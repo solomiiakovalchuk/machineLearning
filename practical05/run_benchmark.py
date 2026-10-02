@@ -16,7 +16,8 @@ def main() -> int:
     parser.add_argument("--out", default=str(ROOT / "results"), help="каталог результатів")
     args = parser.parse_args()
     results = run_benchmark(args.out)
-    print(results.round(4).to_string(index=False))
+    show = [c for c in results.columns if not c.endswith(("pass1", "pass2", "pass3"))]
+    print(results[show].round(4).to_string(index=False))
     return 0
 
 

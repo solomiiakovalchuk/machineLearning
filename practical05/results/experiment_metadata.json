@@ -1,5 +1,5 @@
 {
-  "runtime_s": 25.1,
+  "runtime_s": 40.7,
   "versions": {
     "python": "3.12.0",
     "sklearn": "1.9.0",
@@ -19,7 +19,9 @@
   ],
   "warmups": 7,
   "repeats": 45,
+  "passes": 3,
   "n_fits": 3,
+  "pooled_samples_per_model_batch": 135,
   "cv": {
     "type": "StratifiedKFold",
     "n_splits": 5,

@@ -31,6 +31,7 @@ from src.candidates import (CANDIDATES, CV_SPLITS, RANDOM_STATE, THRESHOLD,
 BATCH_SIZES = (1, 256)
 WARMUPS = 7
 REPEATS = 45
+N_PASSES = 3
 N_FITS = 3
 
 METRICS = ["f1", "recall", "precision", "roc_auc", "balanced_accuracy", "train_f1"]
@@ -42,6 +43,7 @@ RESULT_COLUMNS = [
     "latency_p50_ms_b1", "latency_p95_ms_b1", "latency_p50_ms_b256", "latency_p95_ms_b256",
     "throughput_samples_s", "model_size_mb",
 ]
+PASS_COLUMNS = [f"latency_p95_ms_b1_pass{i}" for i in range(1, N_PASSES + 1)]
 
 
 def evaluate_cv(pipeline, X: pd.DataFrame, y: pd.Series, cv, threshold: float = THRESHOLD
@@ -138,28 +140,33 @@ def run_benchmark(out_dir) -> pd.DataFrame:
             summaries[name] = summ
             fitted[name] = model
 
-        # профілювання: однаковий пакет для всіх моделей, прогрів + серія вимірів
+        # профілювання: 3 проходи, у кожному - усі моделі по черзі (дрейф однаково впливає на всіх)
         batches = {1: X.iloc[[0]], 256: X.sample(256, random_state=RANDOM_STATE)}
         sample_rows = []
-        for name, model in fitted.items():
-            print(f"[{name}] профілювання ...", flush=True)
-            for bs, batch in batches.items():
-                ms = profile_prediction(model, batch, WARMUPS, REPEATS)
-                sample_rows.append(pd.DataFrame({
-                    "model": name, "batch_size": bs,
-                    "repeat": np.arange(1, len(ms) + 1), "ms": ms}))
+        for p in range(1, N_PASSES + 1):
+            print(f"профілювання, прохід {p}/{N_PASSES} ...", flush=True)
+            for name, model in fitted.items():
+                for bs, batch in batches.items():
+                    ms = profile_prediction(model, batch, WARMUPS, REPEATS)
+                    sample_rows.append(pd.DataFrame({
+                        "model": name, "batch_size": bs, "pass": p,
+                        "repeat": np.arange(1, len(ms) + 1), "ms": ms}))
     samples = pd.concat(sample_rows, ignore_index=True)
 
     rows = []
     for name, summ in summaries.items():
         row = {"model": name, **summ}
         for bs in BATCH_SIZES:
-            ms = samples[(samples["model"] == name) & (samples["batch_size"] == bs)]["ms"].to_numpy()
-            row[f"latency_p50_ms_b{bs}"] = float(np.percentile(ms, 50))
-            row[f"latency_p95_ms_b{bs}"] = float(np.percentile(ms, 95))
+            pool = samples[(samples["model"] == name) & (samples["batch_size"] == bs)]["ms"].to_numpy()
+            row[f"latency_p50_ms_b{bs}"] = float(np.percentile(pool, 50))
+            row[f"latency_p95_ms_b{bs}"] = float(np.percentile(pool, 95))
+        for p in range(1, N_PASSES + 1):
+            one = samples[(samples["model"] == name) & (samples["batch_size"] == 1)
+                          & (samples["pass"] == p)]["ms"].to_numpy()
+            row[f"latency_p95_ms_b1_pass{p}"] = float(np.percentile(one, 95))
         row["throughput_samples_s"] = 256 / (row["latency_p50_ms_b256"] / 1000)
         rows.append(row)
-    results = pd.DataFrame(rows)[RESULT_COLUMNS]
+    results = pd.DataFrame(rows)[RESULT_COLUMNS + PASS_COLUMNS]
 
     results.to_csv(out_dir / "benchmark_results.csv", index=False)
     pd.concat(fold_frames, ignore_index=True).to_csv(out_dir / "fold_results.csv", index=False)
@@ -178,7 +185,8 @@ def run_benchmark(out_dir) -> pd.DataFrame:
         "cpu_count": os.cpu_count(),
         "n_threads": 1,
         "batch_sizes": list(BATCH_SIZES),
-        "warmups": WARMUPS, "repeats": REPEATS, "n_fits": N_FITS,
+        "warmups": WARMUPS, "repeats": REPEATS, "passes": N_PASSES, "n_fits": N_FITS,
+        "pooled_samples_per_model_batch": N_PASSES * REPEATS,
         "cv": {"type": "StratifiedKFold", "n_splits": CV_SPLITS, "shuffle": True,
                "random_state": RANDOM_STATE},
         "threshold": THRESHOLD,
