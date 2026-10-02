@@ -1,0 +1,132 @@
+{
+  "runtime_s": 25.1,
+  "versions": {
+    "python": "3.12.0",
+    "sklearn": "1.9.0",
+    "numpy": "2.2.3",
+    "pandas": "3.0.5",
+    "scipy": "1.15.3",
+    "joblib": "1.6.0",
+    "threadpoolctl": "3.6.0"
+  },
+  "platform": "Windows-11-10.0.26200-SP0",
+  "cpu": "Intel(R) Core(TM) i5-1035G1 CPU @ 1.00GHz",
+  "cpu_count": 8,
+  "n_threads": 1,
+  "batch_sizes": [
+    1,
+    256
+  ],
+  "warmups": 7,
+  "repeats": 45,
+  "n_fits": 3,
+  "cv": {
+    "type": "StratifiedKFold",
+    "n_splits": 5,
+    "shuffle": true,
+    "random_state": 42
+  },
+  "threshold": 0.5,
+  "split": {
+    "train": 455,
+    "test": 114,
+    "test_used_in_benchmark": false
+  },
+  "size_serialization": "joblib.dump(pipeline, compress=3)",
+  "candidates": [
+    {
+      "name": "logreg",
+      "steps": [
+        "imputer",
+        "scaler",
+        "clf"
+      ],
+      "classifier": "LogisticRegression",
+      "params": {
+        "C": 1.0,
+        "max_iter": 5000,
+        "random_state": 42
+      },
+      "source_work": "ПР № 4"
+    },
+    {
+      "name": "tree",
+      "steps": [
+        "imputer",
+        "clf"
+      ],
+      "classifier": "DecisionTreeClassifier",
+      "params": {
+        "max_depth": 3,
+        "min_samples_leaf": 16,
+        "random_state": 42
+      },
+      "source_work": "ЛР № 4"
+    },
+    {
+      "name": "knn",
+      "steps": [
+        "imputer",
+        "scaler",
+        "clf"
+      ],
+      "classifier": "KNeighborsClassifier",
+      "params": {
+        "n_neighbors": 5,
+        "weights": "distance"
+      },
+      "source_work": "ЛР № 3 (тип моделі)"
+    },
+    {
+      "name": "svm_rbf",
+      "steps": [
+        "imputer",
+        "scaler",
+        "clf"
+      ],
+      "classifier": "CalibratedClassifierCV",
+      "params": {
+        "method": "sigmoid",
+        "cv": 5,
+        "ensemble": false,
+        "estimator__C": 1.0,
+        "estimator__gamma": "scale",
+        "estimator__random_state": 42
+      },
+      "source_work": "ЛР № 3 (тип моделі)"
+    },
+    {
+      "name": "random_forest",
+      "steps": [
+        "imputer",
+        "clf"
+      ],
+      "classifier": "RandomForestClassifier",
+      "params": {
+        "n_estimators": 300,
+        "max_features": "sqrt",
+        "random_state": 42,
+        "n_jobs": 1
+      },
+      "source_work": "ЛР № 4"
+    },
+    {
+      "name": "hist_gb",
+      "steps": [
+        "imputer",
+        "clf"
+      ],
+      "classifier": "HistGradientBoostingClassifier",
+      "params": {
+        "max_iter": 200,
+        "learning_rate": 0.05,
+        "max_leaf_nodes": 15,
+        "min_samples_leaf": 20,
+        "l2_regularization": 1.0,
+        "early_stopping": false,
+        "random_state": 42
+      },
+      "source_work": "ЛР № 4"
+    }
+  ]
+}
