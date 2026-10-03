@@ -620,6 +620,22 @@ def score_anomalies(bundle: DetectorBundle, X_scaled: np.ndarray, Z: np.ndarray,
     return df
 
 
+def precision_at_k(y, scores, k: int) -> float:
+    """Частка аномалій серед k об'єктів із найбільшим score.
+
+    Якщо на межі top-k кілька однакових балів, береться очікуване значення за
+    випадкового вибору серед них: результат не залежить від порядку рядків.
+    """
+    y = np.asarray(y).astype(float)
+    s = np.asarray(scores, dtype=float)
+    if not _is_int(k) or not 1 <= k <= len(s):
+        raise ValueError(f"k must be an int in [1, {len(s)}], got {k!r}")
+    kth = np.sort(s)[::-1][k - 1]
+    above, tied = s > kth, s == kth
+    need = k - int(above.sum())
+    return float((y[above].sum() + need * y[tied].mean()) / k)
+
+
 def evaluate_anomalies(scores_df: pd.DataFrame, y_controlled) -> pd.DataFrame:
     """Метрики кожного детектора проти контрольованих аномалій (y=1 - аномалія)."""
     y = np.asarray(y_controlled).astype(int)
@@ -632,7 +648,6 @@ def evaluate_anomalies(scores_df: pd.DataFrame, y_controlled) -> pd.DataFrame:
     for d in DETECTORS:
         s = scores_df[f"score_{d}"].to_numpy()
         flag = scores_df[f"flag_{d}"].to_numpy().astype(int)
-        topk = np.argsort(-s, kind="stable")[:k]
         tp = int(((flag == 1) & (y == 1)).sum())
         fp = int(((flag == 1) & (y == 0)).sum())
         fn = int(((flag == 0) & (y == 1)).sum())
@@ -641,7 +656,7 @@ def evaluate_anomalies(scores_df: pd.DataFrame, y_controlled) -> pd.DataFrame:
                      "precision": precision_score(y, flag, zero_division=0),
                      "recall": recall_score(y, flag, zero_division=0),
                      "f1": f1_score(y, flag, zero_division=0),
-                     "precision_at_k": float(y[topk].mean()), "k": k,
+                     "precision_at_k": precision_at_k(y, s, k), "k": k,
                      "n_flagged": int(flag.sum()), "tp": tp, "fp": fp, "fn": fn, "tn": tn})
     return pd.DataFrame(rows)
 

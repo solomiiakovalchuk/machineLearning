@@ -268,6 +268,17 @@ class TestDetectors(unittest.TestCase):
         self.assertTrue((m.tp + m.fp + m.fn + m.tn == len(self.y)).all())
         self.assertGreater(m.set_index("detector").loc["rec", "roc_auc"], 0.9)  # викиди 6 sigma
 
+    def test_precision_at_k_ties_do_not_depend_on_row_order(self):
+        # три однакові бали на межі top-2: два з них аномалії -> очікувана точність 2/3
+        df = pd.DataFrame({f"score_{d}": [1.0, 1.0, 1.0, 0.2] for d in U.DETECTORS})
+        for d in U.DETECTORS:
+            df[f"flag_{d}"] = df[f"score_{d}"] > 0.5
+        y = np.array([0, 1, 1, 0])
+        direct = U.evaluate_anomalies(df, y)["precision_at_k"]
+        reverse = U.evaluate_anomalies(df.iloc[::-1].reset_index(drop=True), y[::-1])["precision_at_k"]
+        np.testing.assert_allclose(direct, 2 / 3)
+        np.testing.assert_allclose(reverse, 2 / 3)
+
     def test_evaluate_requires_both_classes(self):
         with self.assertRaises(ValueError):
             U.evaluate_anomalies(self.scores, np.zeros(len(self.scores)))
