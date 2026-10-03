@@ -1,0 +1,28 @@
+{
+  "experiment": "lr05_breast_cancer_unsupervised",
+  "version": "1.0.0",
+  "split": {"test_size": 0.2, "random_state": 42, "stratify_by_label_for_split_only": true},
+  "preprocessing": {"log1p": true, "scaler": "standard"},
+  "pca": {"variance_thresholds": [0.80, 0.90, 0.95], "working_threshold": 0.90},
+  "kmeans": {
+    "k_values": [2, 3, 4, 5, 6, 7, 8, 9, 10],
+    "seeds": [11, 23, 42, 67, 101],
+    "n_init": 10,
+    "selection_rule": "max mean silhouette; if (best - other) < 0.01 prefer higher mean pairwise ARI, then smaller K",
+    "practical_tie": 0.01
+  },
+  "stability": {"subsample_fraction": 0.9, "n_subsample_runs": 20, "unstable_threshold": 0.8},
+  "anomalies": {
+    "seed": 42,
+    "count_per_type": 6,
+    "kinds": {
+      "calibration_scale": {"factor": 1.6},
+      "geometry_break": {"area_factor": 0.4},
+      "worst_mean_swap": {},
+      "texture_noise": {"sigma": 0.5}
+    }
+  },
+  "isolation_forest": {"n_estimators": 300, "max_samples": "auto", "random_state": 42},
+  "threshold_quantile": 0.95,
+  "combined_rule": "max_percentile"
+}

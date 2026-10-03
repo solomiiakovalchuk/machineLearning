@@ -1,0 +1,140 @@
+{
+  "files": [
+    {
+      "path": "results/anomaly_injections.csv",
+      "size_bytes": 1015
+    },
+    {
+      "path": "results/anomaly_metrics.csv",
+      "size_bytes": 632
+    },
+    {
+      "path": "results/anomaly_recall_by_kind.csv",
+      "size_bytes": 277
+    },
+    {
+      "path": "results/cluster_composition.csv",
+      "size_bytes": 410
+    },
+    {
+      "path": "results/clustering_runs.csv",
+      "size_bytes": 9839
+    },
+    {
+      "path": "results/clustering_summary.csv",
+      "size_bytes": 5216
+    },
+    {
+      "path": "results/external_audit.csv",
+      "size_bytes": 441
+    },
+    {
+      "path": "results/false_negatives.csv",
+      "size_bytes": 4827
+    },
+    {
+      "path": "results/false_positives.csv",
+      "size_bytes": 1129
+    },
+    {
+      "path": "results/flagged_counts.csv",
+      "size_bytes": 354
+    },
+    {
+      "path": "results/if_disagreement.csv",
+      "size_bytes": 82
+    },
+    {
+      "path": "results/object_stability_pca6.csv",
+      "size_bytes": 21663
+    },
+    {
+      "path": "results/object_stability_scaled30.csv",
+      "size_bytes": 21666
+    },
+    {
+      "path": "results/pca_dimension_comparison.csv",
+      "size_bytes": 408
+    },
+    {
+      "path": "results/pca_loadings.csv",
+      "size_bytes": 2322
+    },
+    {
+      "path": "results/pca_variance.csv",
+      "size_bytes": 1370
+    },
+    {
+      "path": "results/posthoc_q_sensitivity.csv",
+      "size_bytes": 306
+    },
+    {
+      "path": "results/preprocessing_check.csv",
+      "size_bytes": 1727
+    },
+    {
+      "path": "results/run_log.txt",
+      "size_bytes": 8897
+    },
+    {
+      "path": "results/selected_k.json",
+      "size_bytes": 520
+    },
+    {
+      "path": "results/split_ids.csv",
+      "size_bytes": 6044
+    },
+    {
+      "path": "results/stability_summary.json",
+      "size_bytes": 615
+    },
+    {
+      "path": "figures/01_scree_cumulative.png",
+      "size_bytes": 51108
+    },
+    {
+      "path": "figures/02_reconstruction_error_vs_q.png",
+      "size_bytes": 53060
+    },
+    {
+      "path": "figures/03_pca_loadings.png",
+      "size_bytes": 120931
+    },
+    {
+      "path": "figures/04_pca_2d_projection.png",
+      "size_bytes": 68191
+    },
+    {
+      "path": "figures/05_clustering_metrics.png",
+      "size_bytes": 161179
+    },
+    {
+      "path": "figures/06_object_stability.png",
+      "size_bytes": 35144
+    },
+    {
+      "path": "figures/07_cluster_composition.png",
+      "size_bytes": 32655
+    },
+    {
+      "path": "figures/08_reconstruction_error_distributions.png",
+      "size_bytes": 62045
+    },
+    {
+      "path": "figures/09_anomaly_pr_curves.png",
+      "size_bytes": 69220
+    },
+    {
+      "path": "figures/10_if_score_scaled_vs_pca.png",
+      "size_bytes": 57750
+    },
+    {
+      "path": "figures/11_top_anomalies_profiles.png",
+      "size_bytes": 125157
+    },
+    {
+      "path": "artifacts/lr05_bundle.joblib",
+      "size_bytes": 6517972
+    }
+  ]
+}

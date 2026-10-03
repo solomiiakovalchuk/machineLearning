@@ -19,3 +19,4 @@ Thumbs.db
 # Серіалізовані моделі відтворюються запуском ноутбука
 lab04/results/*.joblib
 practical05/results/models/
+lab05/artifacts/*.joblib

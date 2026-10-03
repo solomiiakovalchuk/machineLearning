@@ -1,0 +1,24 @@
+{
+  "scaled30": {
+    "selected_k": 2,
+    "silhouette_mean": 0.3450524273229476,
+    "ari_mean": 0.9946645146064641,
+    "best_silhouette_k": 2,
+    "best_silhouette": 0.3450524273229476,
+    "tie_candidates": [
+      2
+    ],
+    "practical_tie": 0.01
+  },
+  "pca6": {
+    "selected_k": 2,
+    "silhouette_mean": 0.3766949085242461,
+    "ari_mean": 1.0,
+    "best_silhouette_k": 2,
+    "best_silhouette": 0.3766949085242461,
+    "tie_candidates": [
+      2
+    ],
+    "practical_tie": 0.01
+  }
+}

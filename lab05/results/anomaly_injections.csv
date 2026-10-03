@@ -1,0 +1,25 @@
+id,kind,params
+507,calibration_scale,"{""factor"": 1.6}"
+296,calibration_scale,"{""factor"": 1.6}"
+519,calibration_scale,"{""factor"": 1.6}"
+428,calibration_scale,"{""factor"": 1.6}"
+359,calibration_scale,"{""factor"": 1.6}"
+501,calibration_scale,"{""factor"": 1.6}"
+150,geometry_break,"{""area_factor"": 0.4}"
+439,geometry_break,"{""area_factor"": 0.4}"
+434,geometry_break,"{""area_factor"": 0.4}"
+321,geometry_break,"{""area_factor"": 0.4}"
+73,geometry_break,"{""area_factor"": 0.4}"
+284,geometry_break,"{""area_factor"": 0.4}"
+70,worst_mean_swap,{}
+408,worst_mean_swap,{}
+298,worst_mean_swap,{}
+375,worst_mean_swap,{}
+247,worst_mean_swap,{}
+537,worst_mean_swap,{}
+564,texture_noise,"{""sigma"": 0.5, ""n_cells"": 72}"
+295,texture_noise,"{""sigma"": 0.5, ""n_cells"": 72}"
+95,texture_noise,"{""sigma"": 0.5, ""n_cells"": 72}"
+140,texture_noise,"{""sigma"": 0.5, ""n_cells"": 72}"
+535,texture_noise,"{""sigma"": 0.5, ""n_cells"": 72}"
+488,texture_noise,"{""sigma"": 0.5, ""n_cells"": 72}"

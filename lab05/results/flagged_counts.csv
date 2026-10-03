@@ -1,0 +1,5 @@
+detector,threshold,train_flagged,train_n,test_clean_flagged,test_clean_n,test_anomalies_flagged,test_anomalies_n,test_unmodified_flagged,test_unmodified_n
+if30,0.5461567586783439,23,455,4,90,4,24,4,114
+ifpca,0.5486245236824125,23,455,2,90,1,24,2,114
+rec,0.2647272819821693,23,455,6,90,18,24,6,114
+combined,0.9626373626373627,22,455,6,90,16,24,6,114

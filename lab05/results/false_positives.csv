@@ -1,0 +1,8 @@
+id,flag_rec,flag_combined,score_rec,diagnosis_audit_only,feature_1,residual_1,feature_2,residual_2,feature_3,residual_3
+288,True,True,0.5722748213518071,benign,concave_points_se,1.945332960029626,symmetry_mean,1.8330918019626623,smoothness_se,1.4292479642447795
+528,True,True,0.357375683418283,benign,texture_se,1.7603724444871722,concave_points_se,1.617983685276414,smoothness_se,-1.1256848354166444
+417,True,False,0.2852422920036082,malignant,radius_se,1.4134307619735391,perimeter_se,0.9073322923521612,fractal_dimension_worst,0.8555839229979172
+568,True,True,0.3635886423954995,benign,smoothness_mean,-1.479040701251599,radius_se,1.0682399544580756,perimeter_se,1.0581919475993522
+83,True,True,0.5127082471383619,malignant,concavity_se,-1.5732186542705204,fractal_dimension_se,1.287571400545235,smoothness_se,-1.2412165664171322
+461,False,True,0.24913550390210165,malignant,radius_se,1.8905375768767687,symmetry_se,-0.9255842586008943,texture_se,-0.6597652829154117
+504,True,True,0.4155322245332402,benign,smoothness_se,-1.9423664769040947,smoothness_mean,1.4692971733801619,fractal_dimension_mean,1.1220858709088986

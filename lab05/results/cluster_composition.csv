@@ -1,0 +1,9 @@
+space,part,cluster,malignant,benign,size,malignant_share
+scaled30,train,0,143,10,153,0.934640522875817
+scaled30,train,1,27,275,302,0.08940397350993377
+scaled30,test_clean,0,37,3,40,0.925
+scaled30,test_clean,1,5,69,74,0.06756756756756757
+pca6,train,0,28,275,303,0.0924092409240924
+pca6,train,1,142,10,152,0.9342105263157895
+pca6,test_clean,0,5,69,74,0.06756756756756757
+pca6,test_clean,1,37,3,40,0.925

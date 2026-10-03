@@ -1,0 +1,24 @@
+{
+  "scaled30": {
+    "K": 2,
+    "seed_ari_mean": 0.9946645146064641,
+    "seed_nmi_mean": 0.9868299602189916,
+    "run_ari_vs_reference_mean": 0.9840439947667893,
+    "mean_object_stability": 0.996043956043956,
+    "n_below_threshold": 4,
+    "n_below_1": 8,
+    "n_objects": 455,
+    "subsample_size": 410
+  },
+  "pca6": {
+    "K": 2,
+    "seed_ari_mean": 1.0,
+    "seed_nmi_mean": 1.0,
+    "run_ari_vs_reference_mean": 0.987185835860411,
+    "mean_object_stability": 0.9968131868131868,
+    "n_below_threshold": 2,
+    "n_below_1": 9,
+    "n_objects": 455,
+    "subsample_size": 410
+  }
+}
