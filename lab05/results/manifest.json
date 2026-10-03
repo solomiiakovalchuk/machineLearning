@@ -18,11 +18,11 @@
     },
     {
       "path": "results/clustering_runs.csv",
-      "size_bytes": 9839
+      "size_bytes": 9818
     },
     {
       "path": "results/clustering_summary.csv",
-      "size_bytes": 5216
+      "size_bytes": 5208
     },
     {
       "path": "results/external_audit.csv",
@@ -54,7 +54,7 @@
     },
     {
       "path": "results/pca_dimension_comparison.csv",
-      "size_bytes": 408
+      "size_bytes": 407
     },
     {
       "path": "results/pca_loadings.csv",

@@ -1,6 +1,6 @@
 python: 3.12.0 | sklearn 1.9.0 | numpy 2.2.3 | pandas 3.0.5 | scipy 1.15.3 | matplotlib 3.10.0 | joblib 1.6.0
 platform: Windows-11-10.0.26200-SP0
-runtime_s: 16.5
+runtime_s: 22.8
 warnings captured during run: 0
 q per threshold: {0.8: 4, 0.9: 6, 0.95: 10}
 selected K: {'scaled30': 2, 'pca6': 2}
@@ -13,9 +13,9 @@ skew |>1|: raw=22 log1p=15 (mean |skew| 1.72 -> 1.13)
 
 [PCA] q per threshold: 0.80->q=4, 0.90->q=6, 0.95->q=10; working q=6
  threshold  q  cumulative_variance  recon_mse_mean  recon_mse_p95  silhouette_k2  pca_fit_time_s
-      0.80  4               0.8070          0.1930         0.6206         0.4118          0.0041
-      0.90  6               0.9014          0.0986         0.2647         0.3767          0.0035
-      0.95 10               0.9580          0.0420         0.1116         0.3577          0.0032
+      0.80  4               0.8070          0.1930         0.6206         0.4118          0.0052
+      0.90  6               0.9014          0.0986         0.2647         0.3767          0.0044
+      0.95 10               0.9580          0.0420         0.1116         0.3577          0.0047
 
 [K-Means] selected K: scaled30: K=2 (sil=0.3451, ARI=0.9947); pca6: K=2 (sil=0.3767, ARI=1.0000)
 -- scaled30
@@ -119,4 +119,4 @@ anomalies 24     0          4           1    19
 [FP] clean test objects flagged by rec or combined: 7 (malignant by audit: 3)
 [FN] missed anomalies per detector: {'combined': 8, 'if30': 20, 'ifpca': 23, 'rec': 6}
 
-Runtime: 16.5 s
+Runtime: 22.8 s
