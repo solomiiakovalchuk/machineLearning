@@ -1,6 +1,7 @@
 """Pure audit functions for the fixed LR5 experiment; no diagnostic labels in policy."""
 from __future__ import annotations
 import hashlib
+import json
 from pathlib import Path
 from itertools import combinations
 import numpy as np
@@ -14,6 +15,11 @@ def validate_artifacts(paths, train_ids, test_ids, X, labels, scores, k):
     for path in paths:
         if not Path(path).is_file() or Path(path).stat().st_size == 0:
             raise ValueError(f'missing or empty artifact: {path}')
+        try:
+            if Path(path).suffix == '.json': json.loads(Path(path).read_text(encoding='utf-8'))
+            if Path(path).suffix == '.csv': pd.read_csv(path)
+        except Exception as exc:
+            raise ValueError(f'corrupt artifact: {path}') from exc
     train_ids, test_ids = np.asarray(train_ids), np.asarray(test_ids)
     if len(np.unique(train_ids)) != len(train_ids) or len(np.unique(test_ids)) != len(test_ids):
         raise ValueError('duplicate object id')
@@ -116,7 +122,8 @@ def apply_action_policy(scores, rules):
 
 def explain_anomaly(row, category):
     keys=['id','cluster','stability','margin','score_if30','score_ifpca','score_rec','score_combined',
-          'pct_if30','pct_ifpca','pct_rec','pct_combined','action','triggered_rules']
+          'pct_if30','pct_ifpca','pct_rec','pct_combined','action','triggered_rules',
+          'largest_residual_feature','largest_residual']
     card={k:row[k].item() if isinstance(row[k],np.generic) else row[k] for k in keys}
     card.update(category=category,
                 hypothesis=f"Перевірити вимірювання {row['largest_residual_feature']}; найбільший квадрат залишку = {row['largest_residual']:.4f}",

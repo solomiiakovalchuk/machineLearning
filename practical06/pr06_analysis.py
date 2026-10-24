@@ -38,7 +38,8 @@ def run():
     te=b['preprocessor'].transform(batch.X); zte=b['pca'].transform(te)
     scores=U.predict_new(b,batch.X).rename(columns={'cluster_pca':'cluster'})
     for det in U.DETECTORS:
-        scores[f'pct_{det}']=U.empirical_percentile(b['detectors'].sorted_train[det],scores[f'score_{det}'])
+        reference=np.sort(b['detectors'].train_scores[det])
+        scores[f'pct_{det}']=U.empirical_percentile(reference,scores[f'score_{det}'])
     report=A.validate_artifacts(paths,d.id_train,d.id_test,xs,ref,scores,k)
     report.update(q=int(b['pca'].n_components_),python=platform.python_version(),
                   input_commit='1bd0b4a',reference_seed=42)
