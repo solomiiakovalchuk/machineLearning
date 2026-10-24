@@ -241,8 +241,9 @@ Combined успадковано з ЛР № 5 як max процентилів IF
 
 | action | n | tp | conflicts | fp | fraction |
 | --- | --- | --- | --- | --- | --- |
-| data_quality_check | 16 | 10 | 0 | 6 | 0.1404 |
 | manual_review | 8 | 8 | 8 | 0 | 0.0702 |
+| data_quality_check | 16 | 10 | 0 | 6 | 0.1404 |
+| uncertain_segment | 0 | 0 | 0 | 0 | 0.0000 |
 | no_action | 90 | 6 | 0 | 84 | 0.7895 |
 
 ![Наслідки маршрутизації](figures/07_actions.png)

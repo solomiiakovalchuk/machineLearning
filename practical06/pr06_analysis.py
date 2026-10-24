@@ -114,7 +114,9 @@ def run():
     reviewed=scores.action!='no_action';truth=batch.is_anomaly.astype(bool)
     audit=scores[['id','action','conflict']].copy();audit['controlled_anomaly']=truth;audit['kind']=batch.kind
     audit['diagnosis_audit_only']=d.y_test.to_numpy();save(audit,'action_label_audit')
-    actions=audit.groupby('action').agg(n=('id','size'),tp=('controlled_anomaly','sum'),conflicts=('conflict','sum')).reset_index()
+    all_actions=[r['action'] for r in cfg['policy']]+['no_action']
+    actions=audit.groupby('action').agg(n=('id','size'),tp=('controlled_anomaly','sum'),conflicts=('conflict','sum'))
+    actions=actions.reindex(all_actions,fill_value=0).rename_axis('action').reset_index()
     actions['fp']=actions.n-actions.tp;actions['fraction']=actions.n/len(scores);save(actions,'action_summary')
     tp=int((reviewed&truth).sum());fp=int((reviewed&~truth).sum());fn=int((~reviewed&truth).sum())
     metrics={'train_n':len(raw),'test_n':len(scores),'q':int(b['pca'].n_components_),'k':k,

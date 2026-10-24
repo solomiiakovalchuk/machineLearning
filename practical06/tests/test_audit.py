@@ -80,6 +80,8 @@ class TestAudit(unittest.TestCase):
         self.assertEqual(len(list((ROOT/'figures').glob('*.png'))),7)
         self.assertEqual(len(pd.read_csv(ROOT/'results/object_stability.csv')),455)
         self.assertEqual(len(pd.read_csv(ROOT/'results/cluster_profiles.csv')),60)
+        self.assertEqual(set(pd.read_csv(ROOT/'results/action_summary.csv').action),
+                         {'manual_review','data_quality_check','uncertain_segment','no_action'})
     def test_disagreement_cards_really_disagree(self):
         cards=pd.read_csv(ROOT/'results/anomaly_cards.csv')
         scores=pd.read_csv(ROOT/'results/scores_actions.csv').set_index('id')
