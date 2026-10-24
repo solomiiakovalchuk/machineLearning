@@ -1,0 +1,16 @@
+{
+  "seed": 42,
+  "repeats": 20,
+  "subsample_fraction": 0.9,
+  "stability_threshold": 0.8,
+  "boundary_threshold": 0.05,
+  "policy": [
+    {"action": "manual_review", "column": "pct_combined", "operator": "ge", "threshold": 0.99},
+    {"action": "data_quality_check", "column": "pct_rec", "operator": "ge", "threshold": 0.95},
+    {"action": "uncertain_segment", "column": "stability", "operator": "lt", "threshold": 0.8}
+  ],
+  "scenarios": {
+    "quality_triage": {"max_review_fraction": 0.3, "latency_budget_ms": 1000, "fp_cost_minutes": 3, "fn_cost_units": 20},
+    "automatic_rejection": {"max_review_fraction": 0.1, "latency_budget_ms": 100, "fp_cost_units": 100, "fn_cost_units": 20}
+  }
+}
