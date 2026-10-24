@@ -1,0 +1,16 @@
+{
+  "valid": true,
+  "train_n": 455,
+  "test_n": 114,
+  "k": 2,
+  "input_sha256": {
+    "lr05_bundle.joblib": "811f44e57ca78215e8f6d846ebad5dae6483bafdad48bf9f9dc9242e5f32b7b5",
+    "experiment_config.json": "40151751df3e109064c1f752e3522fbabe0e4dd104baf7b5f3c579bf6c801c9d",
+    "split_ids.csv": "126b66fb4265d0fe2c7844bf67678fa03bbbe0825881939fdd162647893ed333",
+    "selected_k.json": "e6b029ff7e90f7c2b0a8497762620b0bc142b09a52c719343c44cb2dc35837ca"
+  },
+  "q": 6,
+  "python": "3.12.0",
+  "input_commit": "1bd0b4a",
+  "reference_seed": 42
+}
