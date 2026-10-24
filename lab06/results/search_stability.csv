@@ -1,0 +1,7 @@
+seed,branch,family,inner_ap,params
+42,manual,lrl2,0.9927760111033379,"{""C"": 1.0}"
+42,automl,lrl2,0.9910686788084502,"{""C"": 0.1, ""class_weight"": null}"
+43,manual,lrl2,0.9909565793295435,"{""C"": 0.1}"
+43,automl,lrl2,0.9911243896334797,"{""C"": 0.1, ""class_weight"": ""balanced""}"
+44,manual,lrl2,0.9939608812469601,"{""C"": 1.0}"
+44,automl,lrl2,0.9938051610576755,"{""C"": 0.1, ""class_weight"": ""balanced""}"

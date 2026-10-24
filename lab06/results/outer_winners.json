@@ -1,0 +1,121 @@
+[
+  {
+    "fold": 0,
+    "branch": "manual",
+    "inner_ap": 0.9882441948572183,
+    "spec": {
+      "family": "rf",
+      "params": {
+        "n_estimators": 64,
+        "max_depth": 10,
+        "min_samples_leaf": 1
+      }
+    }
+  },
+  {
+    "fold": 0,
+    "branch": "automl",
+    "inner_ap": 0.9903275546670252,
+    "spec": {
+      "family": "kneighbor",
+      "params": {
+        "n_neighbors": 3,
+        "weights": "distance"
+      }
+    }
+  },
+  {
+    "fold": 1,
+    "branch": "manual",
+    "inner_ap": 0.9875291949568566,
+    "spec": {
+      "family": "lrl2",
+      "params": {
+        "C": 1.0
+      }
+    }
+  },
+  {
+    "fold": 1,
+    "branch": "automl",
+    "inner_ap": 0.9905520584114098,
+    "spec": {
+      "family": "kneighbor",
+      "params": {
+        "n_neighbors": 3,
+        "weights": "distance"
+      }
+    }
+  },
+  {
+    "fold": 2,
+    "branch": "manual",
+    "inner_ap": 0.987520513669517,
+    "spec": {
+      "family": "lrl2",
+      "params": {
+        "C": 0.1
+      }
+    }
+  },
+  {
+    "fold": 2,
+    "branch": "automl",
+    "inner_ap": 0.987520513669517,
+    "spec": {
+      "family": "lrl2",
+      "params": {
+        "C": 0.1,
+        "class_weight": null
+      }
+    }
+  },
+  {
+    "fold": 3,
+    "branch": "manual",
+    "inner_ap": 0.9950224400821814,
+    "spec": {
+      "family": "lrl2",
+      "params": {
+        "C": 1.0
+      }
+    }
+  },
+  {
+    "fold": 3,
+    "branch": "automl",
+    "inner_ap": 0.9954034181140322,
+    "spec": {
+      "family": "extra_tree",
+      "params": {
+        "n_estimators": 32,
+        "max_depth": 10,
+        "min_samples_leaf": 1
+      }
+    }
+  },
+  {
+    "fold": 4,
+    "branch": "manual",
+    "inner_ap": 0.9955051957121266,
+    "spec": {
+      "family": "lrl2",
+      "params": {
+        "C": 1.0
+      }
+    }
+  },
+  {
+    "fold": 4,
+    "branch": "automl",
+    "inner_ap": 0.9954111706135998,
+    "spec": {
+      "family": "extra_tree",
+      "params": {
+        "n_estimators": 32,
+        "max_depth": 10,
+        "min_samples_leaf": 1
+      }
+    }
+  }
+]

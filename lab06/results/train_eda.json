@@ -1,0 +1,15 @@
+{
+  "train_n": 1437,
+  "features": 64,
+  "positive_n": 146,
+  "missing_n": 0,
+  "constant_features": [
+    "pixel_0_0",
+    "pixel_4_0",
+    "pixel_4_7",
+    "pixel_7_0"
+  ],
+  "min": 0.0,
+  "max": 16.0,
+  "positive_class": "digit 5"
+}

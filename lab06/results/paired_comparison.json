@@ -1,0 +1,16 @@
+{
+  "difference_automl_minus_manual": [
+    0.012743628185906908,
+    1.1102230246251565e-16,
+    0.0,
+    -0.01024126211610632,
+    0.009156921945641328
+  ],
+  "mean_difference": 0.0023318576030884053,
+  "bootstrap_interval_95": [
+    -0.004313372880535527,
+    0.00947756130067241
+  ],
+  "epsilon": 0.01,
+  "interval_limitation": "Five dependent folds; descriptive fold bootstrap, not independent-sample CI or equivalence proof."
+}

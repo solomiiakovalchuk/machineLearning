@@ -1,0 +1,15 @@
+{
+  "on": "full train; descriptive fitted-model comparison, not a generalization estimate",
+  "pairwise_disagreement": {
+    "manual": [
+      0.0020876826722338203,
+      0.0,
+      0.0020876826722338203
+    ],
+    "automl": [
+      0.010438413361169102,
+      0.010438413361169102,
+      0.0
+    ]
+  }
+}

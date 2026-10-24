@@ -1,0 +1,35 @@
+{
+  "selected_branch": "manual",
+  "spec": {
+    "family": "lrl2",
+    "params": {
+      "C": 1.0
+    }
+  },
+  "reason": "Mean AP difference within decision tie region; choose smaller serialized pipeline. This is not proof of equivalence.",
+  "epsilon": 0.01,
+  "cv_evidence": {
+    "difference_automl_minus_manual": [
+      0.012743628185906908,
+      1.1102230246251565e-16,
+      0.0,
+      -0.01024126211610632,
+      0.009156921945641328
+    ],
+    "mean_difference": 0.0023318576030884053,
+    "bootstrap_interval_95": [
+      -0.004313372880535527,
+      0.00947756130067241
+    ],
+    "epsilon": 0.01,
+    "interval_limitation": "Five dependent folds; descriptive fold bootstrap, not independent-sample CI or equivalence proof."
+  },
+  "test_metrics_present": false,
+  "config_sha256": "c325d05b73629789afe3d4b4ed7c46c71dfd5efdcb6202849721ee29d7782daa",
+  "limitations": [
+    "single small historical Digits collection",
+    "no writer IDs; writer-independent performance unverified",
+    "fixed threshold 0.5; AP advantage does not guarantee recall advantage",
+    "limited 12-trial search"
+  ]
+}
