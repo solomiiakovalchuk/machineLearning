@@ -59,7 +59,7 @@ class TestFunctions(unittest.TestCase):
 class TestArtifacts(unittest.TestCase):
     def test_oof_once(self):
         o=pd.read_csv(ROOT/'results/oof_predictions.csv')
-        self.assertEqual(len(o),1437);self.assertTrue(o.id.is_unique);self.assertFalse(o.isna().any().any())
+        self.assertEqual(len(o),3058);self.assertTrue(o.id.is_unique);self.assertFalse(o.isna().any().any())
         self.assertEqual(set(o.fold),set(range(5)))
     def test_budget_actual_fits(self):
         b=pd.read_csv(ROOT/'results/budget_audit.csv');self.assertEqual(len(b),16)
@@ -85,6 +85,7 @@ class TestArtifacts(unittest.TestCase):
         self.assertFalse(d['test_metrics_present']);self.assertEqual(d['selected_branch'],t['branch'])
         self.assertEqual(E.sha256_file(r/'decision_record.json'),(r/'decision.sha256').read_text().strip())
         self.assertEqual(t['decision_sha256'],E.sha256_file(r/'decision_record.json'))
+        self.assertEqual(d['config_sha256'],E.sha256_file(ROOT/'configs/experiment.json'))
     def test_selected_rule(self):
         eng=pd.read_csv(ROOT/'results/engineering.csv');d=json.loads((ROOT/'results/decision_record.json').read_text())
         delta=d['cv_evidence']['mean_difference'];eps=d['epsilon']
@@ -104,6 +105,11 @@ class TestArtifacts(unittest.TestCase):
     def test_heldout_importance(self):
         p=pd.read_csv(ROOT/'results/permutation_importance.csv')
         self.assertEqual(len(p),5*2*64)
+    def test_fresh_source(self):
+        p=json.loads((ROOT/'results/data_provenance.json').read_text())
+        self.assertEqual(p['exact_feature_overlap_previous_source'],0)
+        self.assertEqual(p['n'],3823)
+        self.assertEqual(E.sha256_file(ROOT/'data/optdigits.tra'),p['source_sha256'])
 
 
 if __name__=='__main__':

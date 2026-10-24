@@ -9,7 +9,7 @@ md('''# Лабораторна робота № 6
 ## AutoML і ручне моделювання: контрольоване порівняння
 **Ковальчук · ІПЗс-24-1 · варіант 5 · Бедратюк Л.П.**
 
-Digits: цифра **5 проти решти**. Новий набір обрано, щоб не повторювати вже відкритий test Breast Cancer.
+UCI Optdigits (`optdigits.tra`): цифра **5 проти решти**. Новий набір обрано, щоб не повторювати вже відкритий test Breast Cancer.
 Методичка не задає окремого набору для варіанта 5; це навчальний вибір задачі.
 Код і перевірки підготовлені з Codex; журнал відрізняє виконані агентом перевірки від особистої перевірки студентки.''')
 code('''from pathlib import Path
@@ -46,13 +46,14 @@ log_type='all', sample=False, ensemble=False, skip_transform=True, retrain_full=
 Власні адаптери BaseEstimator **тільки** забезпечують однаковий Pipeline всередині fold; конфігурації обирає FLAML.
 FrozenCV повертає зафіксовані позиційні індекси і не потребує y у split(X), якого викликає FLAML.
 
-Попередній пробний запуск на перших 600 Digits був лише перевіркою API. Він не змінював простір,
-параметри або правило рішення; 117 із цих записів належать майбутньому test (точну кількість перевірено нижче).
-Тому цей test новий щодо попередніх робіт, але **не абсолютно недоторканий у всій сесії**: первинний smoke-test
-бачив частину його записів. Фінальний пошук і вибір їх не використовують; це межа незалежності, яку не приховую.''')
-code('''# API smoke-test used IDs 0..599 before the final stratified split.
-overlap=set(range(600))&set(splits.loc[splits.part.eq('test'),'id'])
-print('API smoke-test overlap with final test:',len(overlap))
+Попередній API smoke-test на перших 600 sklearn Digits перетнувся з початковим holdout.
+Цей експеримент відкинуто; його результат збережено в commit `1a3af08`.
+Фінальний експеримент використовує **optdigits.tra**, іншу частину UCI (3823 записи),
+яку не використовував smoke-test. Перетин ознак із попереднім джерелом перевіряється до split.
+Метрика, ε, простір кандидатів, бюджет і правило вибору при цьому не змінювалися.''')
+code('''display(record('protocol_repair'))
+provenance=record('data_provenance');display(provenance)
+assert provenance['exact_feature_overlap_previous_source']==0
 display(table('candidate_history').groupby(['stage','branch']).agg(trials=('trial','size'),best_inner_ap=('inner_ap','max')))
 display(table('budget_audit').round(5))
 audit=table('flaml_fit_audit')
@@ -71,11 +72,11 @@ display(record('paired_comparison'))
 picture('01_ap_distribution')
 picture('02_paired_ap')
 oof=table('oof_predictions')
-assert len(oof)==1437 and oof.id.is_unique and not oof.isna().any().any()
+assert len(oof)==3058 and oof.id.is_unique and not oof.isna().any().any()
 for row in table('fold_metrics').itertuples():
     g=oof[oof.fold.eq(row.fold)]
     assert np.isclose(E.probability_metrics(g.y,g[row.branch])['ap'],row.ap)''')
-md('''Обидві гілки значно випередили Dummy prior. AutoML має вищу середню AP, але різниця менша за ε.
+md('''Обидві гілки порівнюються з Dummy prior. Рішення спирається на парну різницю та наперед заданий ε.
 П'ять залежних fold-ів — малий матеріал для невизначеності; bootstrap тут описує мінливість середніх
 на цих fold-ах, а не дає незалежний популяційний інтервал. Нуль усередині інтервалу не доводить рівність.
 
@@ -91,10 +92,10 @@ picture('04_confusion_matrices')
 picture('03_calibration')
 picture('06_probability_disagreement')
 picture('07_disagreement_objects')''')
-md('''Усі фінальні searches обирають логістичне сімейство, але параметри змінюються.
+md('''Стійкість сімейства та параметрів оцінюється за трьома searches у таблиці вище.
 OOF-категорії відрізняють «дві неправильні» від «дві правильні»: сама згода не є якістю.
-Перші великі розбіжності стосуються позитивних об'єктів; у fold 0 Manual вибрала RF, тоді як AutoML — KNN.
-Імовірність 1.0 у сусідній моделі не є гарантією; calibration plot і Brier перевіряють інший аспект, ніж AP.
+Великі розбіжності перевіряються за конкретними ID, істинним класом, ймовірностями та зображенням.
+Висока прогнозована ймовірність не є гарантією; calibration plot і Brier перевіряють інший аспект, ніж AP.
 
 ## 5. Важливість на відкладених folds
 Permutation importance рахується тільки на outer-validation, 5 перестановок, seed=42.
@@ -120,13 +121,11 @@ eng=table('engineering')
 if abs(decision['cv_evidence']['mean_difference'])<=decision['epsilon']:
     expected=eng.sort_values(['size_bytes','single_p95_ms','branch']).iloc[0].branch
     assert expected==decision['selected_branch']''')
-md('''Розміри в першому запуску однакові — 2991 байт. Отже, вирішив наступний критерій p95 single-object latency,
-а не строгий виграш у розмірі. Коротке поле reason у замороженому JSON перелічує лише перший критерій;
-фактичне послідовне правило видно в config, engineering.csv і перевірці вище. Первинний JSON збережено без редагування після test.
+md('''Фактичне послідовне правило видно в config, engineering.csv і перевірці вище. Первинний JSON збережено без редагування після test.
 На іншому обладнанні вибір у tie-регіоні може змінитись; для перевірки саме цього рішення слід читати збережені виміри.
 
 ## 7. Test і пакет передачі
-Фінальний test оцінюється для вибраного Manual один раз у початковому запуску.
+Фінальний test оцінюється для вибраної гілки один раз у початковому запуску нового джерела.
 Повторне відтворення коду знову обчислить оцінку, але не створює новий незалежний експеримент.''')
 code('''display(record('test_metrics'))
 t=table('test_predictions');actual=E.probability_metrics(t.y,t.probability)
@@ -140,9 +139,10 @@ np.testing.assert_allclose(predict(loaded,ex['input']),ex['expected_probability'
 assert record('test_metrics')['decision_sha256']==digest''')
 md('''## 8. Висновок
 Гіпотезу «найбільша середня AP автоматично визначає кращу інженерну модель» відхилено заданим ε і tie-break.
-Гіпотезу стійкості **сімейства** фінального пошуку підтримано, але параметри й частина прогнозів змінюються.
-Test AP=0.994419, F1=0.944444: це узгоджується з високою CV-якістю; дві пропущені п'ятірки і два FP залишаються.
-Є обмеження незалежності через попередній API smoke-test, немає writer-ID для групового поділу, історична колекція мала.
+Manual зберігає сімейство RF у трьох searches, але параметри змінюються. AutoML обирає три різні сімейства:
+Extra Trees, KNN і RF; гіпотезу про стійкість сімейства AutoML відхилено, навіть за невеликої розбіжності train-прогнозів.
+Фактичні test AP, F1, recall і матриця помилок наведені вище; модель після test не змінюється.
+Порушення незалежності початкового smoke-test виправлено новим джерелом. Немає writer-ID для групового поділу, історична колекція мала.
 До ЛР № 7 передано модель, схему, конфігурацію, split, результати, model card, залежності й контрольний інференс.
 Потрібні незалежні автори/сканери та перевірка порога для реального OCR-сценарію. Команди й тести — у README.''')
 nb=nbf.v4.new_notebook(cells=cells,metadata={'kernelspec':{'display_name':'Python 3','language':'python','name':'python3'}})

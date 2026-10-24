@@ -1,13 +1,11 @@
 {
-  "train_n": 1437,
+  "train_n": 3058,
   "features": 64,
-  "positive_n": 146,
+  "positive_n": 301,
   "missing_n": 0,
   "constant_features": [
     "pixel_0_0",
-    "pixel_4_0",
-    "pixel_4_7",
-    "pixel_7_0"
+    "pixel_4_7"
   ],
   "min": 0.0,
   "max": 16.0,

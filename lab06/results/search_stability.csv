@@ -1,7 +1,7 @@
 seed,branch,family,inner_ap,params
-42,manual,lrl2,0.9927760111033379,"{""C"": 1.0}"
-42,automl,lrl2,0.9910686788084502,"{""C"": 0.1, ""class_weight"": null}"
-43,manual,lrl2,0.9909565793295435,"{""C"": 0.1}"
-43,automl,lrl2,0.9911243896334797,"{""C"": 0.1, ""class_weight"": ""balanced""}"
-44,manual,lrl2,0.9939608812469601,"{""C"": 1.0}"
-44,automl,lrl2,0.9938051610576755,"{""C"": 0.1, ""class_weight"": ""balanced""}"
+42,manual,rf,0.9975229213465092,"{""n_estimators"": 64, ""max_depth"": null, ""min_samples_leaf"": 3}"
+42,automl,extra_tree,0.9987817970976497,"{""n_estimators"": 32, ""max_depth"": 10, ""min_samples_leaf"": 1}"
+43,manual,rf,0.9970300283584729,"{""n_estimators"": 64, ""max_depth"": null, ""min_samples_leaf"": 1}"
+43,automl,kneighbor,0.9958339044318079,"{""n_neighbors"": 3, ""weights"": ""distance""}"
+44,manual,rf,0.9989168781766603,"{""n_estimators"": 64, ""max_depth"": 10, ""min_samples_leaf"": 1}"
+44,automl,rf,0.9983238382505564,"{""n_estimators"": 32, ""max_depth"": 10, ""min_samples_leaf"": 1}"

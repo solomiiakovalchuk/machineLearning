@@ -1,25 +1,25 @@
 {
-  "branch": "manual",
-  "n": 360,
-  "positive_n": 36,
+  "branch": "automl",
+  "n": 765,
+  "positive_n": 75,
   "threshold": 0.5,
-  "ap": 0.994419483668521,
-  "roc_auc": 0.9993141289437586,
-  "f1": 0.9444444444444444,
-  "precision": 0.9444444444444444,
-  "recall": 0.9444444444444444,
-  "balanced_accuracy": 0.9691358024691358,
-  "brier": 0.006858020720543958,
-  "log_loss": 0.022139932530882235,
+  "ap": 0.9936444845929939,
+  "roc_auc": 0.9989371980676328,
+  "f1": 0.9583333333333334,
+  "precision": 1.0,
+  "recall": 0.92,
+  "balanced_accuracy": 0.96,
+  "brier": 0.010467026070698202,
+  "log_loss": 0.05293371447498632,
   "confusion_matrix": [
     [
-      322,
-      2
+      690,
+      0
     ],
     [
-      2,
-      34
+      6,
+      69
     ]
   ],
-  "decision_sha256": "27112edb474280b211723ae3621c9ac31b738d00d75e5867788ef9efe118f382"
+  "decision_sha256": "c2fd106f1bbd6d18514fea26bc2e3f899bd8a3ffa086e74d4b90ee0bec8c813e"
 }

@@ -19,6 +19,16 @@ from sklearn.metrics import (average_precision_score,roc_auc_score,f1_score,prec
 from flaml import AutoML, tune
 from flaml.automl.model import BaseEstimator
 
+
+def load_data(path):
+    """Local UCI source with explicit provenance; sklearn's 1797 rows are excluded."""
+    frame=pd.read_csv(path,header=None)
+    if frame.shape!=(3823,65):raise ValueError('unexpected UCI source shape')
+    X=frame.iloc[:,:64].to_numpy(dtype=float);digits=frame.iloc[:,64].to_numpy(dtype=int)
+    if not np.isfinite(X).all() or (X<0).any() or (X>16).any() or not set(digits)<=set(range(10)):
+        raise ValueError('invalid source schema')
+    return X,(digits==5).astype(int)
+
 SPACE={
     'lrl2': {'C':[0.01,0.1,1.,10.], 'class_weight':[None,'balanced']},
     'rf': {'n_estimators':[32,64,128], 'max_depth':[5,10,None], 'min_samples_leaf':[1,3,5]},

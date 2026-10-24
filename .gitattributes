@@ -1,0 +1,6 @@
+# Preserve bytes for hashed contracts and the original UCI source across Windows/Linux.
+lab06/configs/experiment.json -text
+lab06/data/optdigits.tra -text
+lab06/results/decision_record.json -text
+lab06/handoff/decision_record.json -text
+lab06/handoff/config.json -text

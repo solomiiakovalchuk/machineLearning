@@ -28,7 +28,20 @@ def run():
     def dump(value,path):path.write_text(json.dumps(value,indent=2,ensure_ascii=False,default=lambda x:x.item()),encoding='utf-8')
     def save(df,name):df.to_csv(R/f'{name}.csv',index=False)
     def figure(name):plt.tight_layout();plt.savefig(F/f'{name}.png',dpi=150);plt.close()
-    Xall,digits=load_digits(return_X_y=True);yall=(digits==5).astype(int)
+    Xall,yall=E.load_data(ROOT/'data/optdigits.tra')
+    old_X,old_digits=load_digits(return_X_y=True)
+    _,old_test=train_test_split(np.arange(len(old_digits)),test_size=.2,stratify=(old_digits==5).astype(int),random_state=42)
+    dump({'discarded_commit':'1a3af08','probe_ids':'0..599 in sklearn.load_digits',
+          'initial_holdout_probe_overlap':len(set(range(600))&set(old_test)),
+          'repair':'Fresh UCI optdigits.tra; search contract preserved'},R/'protocol_repair.json')
+    old_rows={row.tobytes() for row in old_X.astype(float)}
+    overlap=sum(row.tobytes() in old_rows for row in Xall)
+    assert overlap==0, 'new source overlaps the previously explored sklearn data'
+    assert len({row.tobytes() for row in Xall})==len(Xall), 'duplicate feature rows require group-aware splitting'
+    dump({'source':'UCI optdigits.tra','source_sha256':E.sha256_file(ROOT/'data/optdigits.tra'),
+          'previous_source':'sklearn.load_digits (UCI optdigits.tes)',
+          'exact_feature_overlap_previous_source':overlap,'n':len(Xall),
+          'reason':'Repair API smoke-test contamination; preserve search space, metric, epsilon and model seeds.'},R/'data_provenance.json')
     train_ids,test_ids=train_test_split(np.arange(len(yall)),test_size=cfg['test_size'],stratify=yall,random_state=42)
     assert not set(train_ids)&set(test_ids)
     # No EDA, model fitting or prediction accesses Xall[test_ids] before decision freeze below.
@@ -115,7 +128,7 @@ def run():
     elif delta < -eps:selected='manual';reason='Mean paired AP advantage exceeds predeclared epsilon'
     else:
         selected=eng.sort_values(['size_bytes','single_p95_ms','branch']).iloc[0].branch
-        reason='Mean AP difference within decision tie region; choose smaller serialized pipeline. This is not proof of equivalence.'
+        reason='Mean AP difference within decision tie region; apply size, then single-object p95 latency, then Manual. This is not proof of equivalence.'
     decision={'selected_branch':selected,'spec':final_specs[selected],'reason':reason,'epsilon':eps,
               'cv_evidence':compare,'test_metrics_present':False,'config_sha256':E.sha256_file(ROOT/'configs/experiment.json'),
               'limitations':['single small historical Digits collection','no writer IDs; writer-independent performance unverified',
@@ -145,8 +158,12 @@ def run():
     behavior=oof.copy();behavior['category']=categories;behavior['probability_gap']=(oof.manual-oof.automl).abs()
     save(behavior,'oof_behavior');save(behavior.sort_values(['probability_gap','id'],ascending=[False,True]).head(5),'largest_disagreements')
     save(pd.Series(categories).value_counts().rename_axis('category').reset_index(name='n'),'behavior_summary')
-    plt.figure(figsize=(7,4));plt.boxplot([ap.manual,ap.automl,ap.baseline],tick_labels=['Manual','AutoML','Baseline'])
-    plt.xlabel('Search branch');plt.ylabel('Outer validation AP');plt.title('Nested CV distribution, identical folds');figure('01_ap_distribution')
+    fig,axes=plt.subplots(1,2,figsize=(9,4),gridspec_kw={'width_ratios':[2,1]})
+    axes[0].boxplot([ap.manual,ap.automl],tick_labels=['Manual','AutoML'])
+    axes[0].set(xlabel='Search branch',ylabel='Outer validation AP',title='Nested CV: model comparison',ylim=(.97,1.002))
+    axes[1].boxplot([ap.baseline],tick_labels=['Baseline'])
+    axes[1].set(xlabel='Prior baseline',ylabel='Outer validation AP',title='Baseline on separate scale',ylim=(0,.12))
+    figure('01_ap_distribution')
     plt.figure(figsize=(7,4))
     for i,row in ap.iterrows():plt.plot([0,1],[row.manual,row.automl],'o-',label=f'Fold {i+1}')
     plt.xticks([0,1],['Manual','AutoML']);plt.xlabel('Search branch');plt.ylabel('Outer validation AP');plt.title('Paired fold comparison');plt.legend();figure('02_paired_ap')
@@ -174,18 +191,19 @@ def run():
     # Handoff contains a raw-input sklearn pipeline, not a FLAML search object.
     for source,name in [(R/'models'/f'{selected}.joblib','pipeline.joblib'),(R/'decision_record.json','decision_record.json'),
                         (R/'decision.sha256','decision.sha256'),(ROOT/'configs/experiment.json','config.json'),
-                        (R/'split_ids.csv','split_ids.csv'),(R/'fold_metrics.csv','cv_metrics.csv'),(R/'test_metrics.json','test_metrics.json')]:shutil.copyfile(source,H/name)
+                        (R/'split_ids.csv','split_ids.csv'),(R/'fold_metrics.csv','cv_metrics.csv'),(R/'test_metrics.json','test_metrics.json'),
+                        (R/'data_provenance.json','data_provenance.json'),(R/'environment.json','environment.json')]:shutil.copyfile(source,H/name)
     dump({'features':[{'name':n,'dtype':'float64','min':0,'max':16} for n in names],
           'order_required':True,'shape':[None,64],'positive_class':'digit 5',
           'missing':'rejected at serving boundary; training pipeline includes median imputation'},H/'data_schema.json')
     example={'input':X[:3].tolist(),'expected_probability':final_models[selected].predict_proba(X[:3])[:,1].tolist(),'threshold':.5}
     dump(example,H/'inference_example.json')
     shutil.copyfile(ROOT/'inference.py',H/'inference.py');shutil.copyfile(ROOT/'requirements.txt',H/'requirements.txt')
-    card=f'''# Model card — Digits, digit 5 vs rest
+    card=f'''# Model card — UCI Optdigits, digit 5 vs rest
 
 Навчальний прототип маршрутизації зображень 8×8 для оператора OCR. Один об'єкт — 64 пікселі 0–16.
-Позитивний клас: цифра 5; походження: sklearn load_digits / UCI Optical Recognition of Handwritten Digits.
-Джерело: https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html
+Позитивний клас: цифра 5; походження: UCI Optical Recognition of Handwritten Digits, optdigits.tra (3823 записи).
+Увага: це інша частина першоджерела, ніж 1797 записів sklearn.load_digits; її використано після виявленого забруднення попереднього test.
 Ліцензія першоджерела UCI: CC BY 4.0; див. https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits
 
 Вибрана гілка: {selected}; сімейство: {final_specs[selected]['family']}.

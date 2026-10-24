@@ -1,0 +1,8 @@
+{
+  "source": "UCI optdigits.tra",
+  "source_sha256": "e1b683cc211604fe8fd8c4417e6a69f31380e0c61d4af22e93cc21e9257ffedd",
+  "previous_source": "sklearn.load_digits (UCI optdigits.tes)",
+  "exact_feature_overlap_previous_source": 0,
+  "n": 3823,
+  "reason": "Repair API smoke-test contamination; preserve search space, metric, epsilon and model seeds."
+}

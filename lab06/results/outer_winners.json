@@ -2,89 +2,20 @@
   {
     "fold": 0,
     "branch": "manual",
-    "inner_ap": 0.9882441948572183,
+    "inner_ap": 0.9976972211158456,
     "spec": {
-      "family": "rf",
+      "family": "histgb",
       "params": {
-        "n_estimators": 64,
-        "max_depth": 10,
-        "min_samples_leaf": 1
+        "learning_rate": 0.1,
+        "max_iter": 100,
+        "max_leaf_nodes": 7
       }
     }
   },
   {
     "fold": 0,
     "branch": "automl",
-    "inner_ap": 0.9903275546670252,
-    "spec": {
-      "family": "kneighbor",
-      "params": {
-        "n_neighbors": 3,
-        "weights": "distance"
-      }
-    }
-  },
-  {
-    "fold": 1,
-    "branch": "manual",
-    "inner_ap": 0.9875291949568566,
-    "spec": {
-      "family": "lrl2",
-      "params": {
-        "C": 1.0
-      }
-    }
-  },
-  {
-    "fold": 1,
-    "branch": "automl",
-    "inner_ap": 0.9905520584114098,
-    "spec": {
-      "family": "kneighbor",
-      "params": {
-        "n_neighbors": 3,
-        "weights": "distance"
-      }
-    }
-  },
-  {
-    "fold": 2,
-    "branch": "manual",
-    "inner_ap": 0.987520513669517,
-    "spec": {
-      "family": "lrl2",
-      "params": {
-        "C": 0.1
-      }
-    }
-  },
-  {
-    "fold": 2,
-    "branch": "automl",
-    "inner_ap": 0.987520513669517,
-    "spec": {
-      "family": "lrl2",
-      "params": {
-        "C": 0.1,
-        "class_weight": null
-      }
-    }
-  },
-  {
-    "fold": 3,
-    "branch": "manual",
-    "inner_ap": 0.9950224400821814,
-    "spec": {
-      "family": "lrl2",
-      "params": {
-        "C": 1.0
-      }
-    }
-  },
-  {
-    "fold": 3,
-    "branch": "automl",
-    "inner_ap": 0.9954034181140322,
+    "inner_ap": 0.9991030004388459,
     "spec": {
       "family": "extra_tree",
       "params": {
@@ -95,20 +26,100 @@
     }
   },
   {
+    "fold": 1,
+    "branch": "manual",
+    "inner_ap": 0.9969639753754466,
+    "spec": {
+      "family": "rf",
+      "params": {
+        "n_estimators": 64,
+        "max_depth": 10,
+        "min_samples_leaf": 1
+      }
+    }
+  },
+  {
+    "fold": 1,
+    "branch": "automl",
+    "inner_ap": 0.9974183734557348,
+    "spec": {
+      "family": "extra_tree",
+      "params": {
+        "n_estimators": 32,
+        "max_depth": 10,
+        "min_samples_leaf": 1
+      }
+    }
+  },
+  {
+    "fold": 2,
+    "branch": "manual",
+    "inner_ap": 0.99780516084626,
+    "spec": {
+      "family": "rf",
+      "params": {
+        "n_estimators": 64,
+        "max_depth": null,
+        "min_samples_leaf": 3
+      }
+    }
+  },
+  {
+    "fold": 2,
+    "branch": "automl",
+    "inner_ap": 0.997782256536625,
+    "spec": {
+      "family": "extra_tree",
+      "params": {
+        "n_estimators": 32,
+        "max_depth": 10,
+        "min_samples_leaf": 1
+      }
+    }
+  },
+  {
+    "fold": 3,
+    "branch": "manual",
+    "inner_ap": 0.9975438786179822,
+    "spec": {
+      "family": "rf",
+      "params": {
+        "n_estimators": 64,
+        "max_depth": 10,
+        "min_samples_leaf": 1
+      }
+    }
+  },
+  {
+    "fold": 3,
+    "branch": "automl",
+    "inner_ap": 0.9975196370566671,
+    "spec": {
+      "family": "rf",
+      "params": {
+        "n_estimators": 32,
+        "max_depth": 10,
+        "min_samples_leaf": 1
+      }
+    }
+  },
+  {
     "fold": 4,
     "branch": "manual",
-    "inner_ap": 0.9955051957121266,
+    "inner_ap": 0.9965048003399749,
     "spec": {
-      "family": "lrl2",
+      "family": "histgb",
       "params": {
-        "C": 1.0
+        "learning_rate": 0.1,
+        "max_iter": 150,
+        "max_leaf_nodes": 31
       }
     }
   },
   {
     "fold": 4,
     "branch": "automl",
-    "inner_ap": 0.9954111706135998,
+    "inner_ap": 0.9948629343077396,
     "spec": {
       "family": "extra_tree",
       "params": {

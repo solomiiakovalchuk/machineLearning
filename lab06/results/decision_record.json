@@ -1,31 +1,33 @@
 {
-  "selected_branch": "manual",
+  "selected_branch": "automl",
   "spec": {
-    "family": "lrl2",
+    "family": "extra_tree",
     "params": {
-      "C": 1.0
+      "n_estimators": 32,
+      "max_depth": 10,
+      "min_samples_leaf": 1
     }
   },
-  "reason": "Mean AP difference within decision tie region; choose smaller serialized pipeline. This is not proof of equivalence.",
+  "reason": "Mean AP difference within decision tie region; apply size, then single-object p95 latency, then Manual. This is not proof of equivalence.",
   "epsilon": 0.01,
   "cv_evidence": {
     "difference_automl_minus_manual": [
-      0.012743628185906908,
-      1.1102230246251565e-16,
-      0.0,
-      -0.01024126211610632,
-      0.009156921945641328
+      0.012464890667521544,
+      0.0005108780108781241,
+      -0.0005149498124416008,
+      -2.1761392729247042e-05,
+      0.0017412935323382062
     ],
-    "mean_difference": 0.0023318576030884053,
+    "mean_difference": 0.0028360702011134054,
     "bootstrap_interval_95": [
-      -0.004313372880535527,
-      0.00947756130067241
+      -0.0001125088798927143,
+      0.007724203144492248
     ],
     "epsilon": 0.01,
     "interval_limitation": "Five dependent folds; descriptive fold bootstrap, not independent-sample CI or equivalence proof."
   },
   "test_metrics_present": false,
-  "config_sha256": "c325d05b73629789afe3d4b4ed7c46c71dfd5efdcb6202849721ee29d7782daa",
+  "config_sha256": "61e94714c3c41e03c98ff333e6938d9249fbfdbfe3972a5821035beae5934bd8",
   "limitations": [
     "single small historical Digits collection",
     "no writer IDs; writer-independent performance unverified",

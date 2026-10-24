@@ -167,7 +167,7 @@
     }
   },
   "config": {
-    "dataset": "sklearn.load_digits",
+    "dataset": "UCI Optdigits, optdigits.tra only (new source partition)",
     "target": "digit == 5",
     "seed": 42,
     "test_size": 0.2,

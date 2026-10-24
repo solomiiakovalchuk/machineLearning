@@ -2,13 +2,13 @@
   "on": "full train; descriptive fitted-model comparison, not a generalization estimate",
   "pairwise_disagreement": {
     "manual": [
-      0.0020876826722338203,
-      0.0,
-      0.0020876826722338203
+      0.0013080444735120995,
+      0.0013080444735120995,
+      0.0
     ],
     "automl": [
-      0.010438413361169102,
-      0.010438413361169102,
+      0.0003270111183780249,
+      0.0003270111183780249,
       0.0
     ]
   }
