@@ -92,6 +92,7 @@ IF-PCA оцінює нетиповість усередині підпросто
 Процентиль — частка train scores ≤ поточного; це не ймовірність спотворення.
 Пріоритети та пороги читаються з JSON, усі одночасні умови журналюються.''')
 code('''display(json.loads((ROOT/'configs/audit.json').read_text()))
+display(json.loads((ROOT/'results/repair_evidence.json').read_text()))
 picture('06_anomaly_signals')
 cards=table('anomaly_cards')
 display(cards)

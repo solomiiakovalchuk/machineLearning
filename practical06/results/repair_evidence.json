@@ -1,0 +1,20 @@
+{
+  "old_commit": "8aaf097",
+  "old_disagreement_ids": [
+    298,
+    434,
+    428,
+    452,
+    495
+  ],
+  "old_true_disagreements": 1,
+  "old_incorrect_cards": 4,
+  "fixed_disagreement_ids": [
+    298,
+    359,
+    501,
+    519,
+    417
+  ],
+  "fixed_true_disagreements": 5
+}

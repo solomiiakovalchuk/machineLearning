@@ -11,8 +11,11 @@ class TestAudit(unittest.TestCase):
     def valid(self,**kwargs):
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp)/'a.json';p.write_text('{}')
+            s={'id':[3]}
+            for signal in ['if30','ifpca','rec','combined']:
+                s[f'score_{signal}']=[.2];s[f'pct_{signal}']=[.2]
             args=dict(paths=[p],train_ids=[1,2],test_ids=[3],X=[[0,1],[2,3]],labels=[0,1],
-                      scores=pd.DataFrame({'id':[3],'score_rec':[.2]}),k=2)
+                      scores=pd.DataFrame(s),k=2)
             args.update(kwargs);return A.validate_artifacts(**args)
     def test_valid_contract(self):self.assertTrue(self.valid()['valid'])
     def test_missing(self):
@@ -32,7 +35,13 @@ class TestAudit(unittest.TestCase):
     def test_cluster_ids(self):
         with self.assertRaises(ValueError):self.valid(labels=[1,2])
     def test_percentile_range(self):
-        with self.assertRaises(ValueError):self.valid(scores=pd.DataFrame({'id':[3],'pct_rec':[1.1]}))
+        s={'id':[3]}
+        for signal in ['if30','ifpca','rec','combined']:
+            s[f'score_{signal}']=[.2];s[f'pct_{signal}']=[.2]
+        s['pct_rec']=[1.1]
+        with self.assertRaises(ValueError):self.valid(scores=pd.DataFrame(s))
+    def test_score_schema(self):
+        with self.assertRaises(ValueError):self.valid(scores=pd.DataFrame({'id':[3],'score_rec':['text']}))
     def test_alignment(self):np.testing.assert_array_equal(A.align([0,0,1,1],[1,1,0,0]),[0,0,1,1])
     def test_distance(self):
         d=A.compute_boundary_diagnostics([[1,0]],[[0,0],[4,0]])

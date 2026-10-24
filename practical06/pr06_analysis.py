@@ -141,9 +141,9 @@ def run():
     # Figures, all with titles, axis labels and explicit scales.
     heat=profiles.pivot(index='cluster',columns='feature',values='profile')
     cols=heat.abs().max().nlargest(15).index
-    plt.figure(figsize=(12,3));plt.imshow(heat[cols],aspect='auto',cmap='coolwarm',vmin=-1.5,vmax=1.5)
+    plt.figure(figsize=(12,4));plt.imshow(heat[cols],aspect='auto',cmap='coolwarm',vmin=-1.5,vmax=1.5)
     plt.xticks(range(len(cols)),cols,rotation=65,ha='right');plt.yticks(range(k),range(k))
-    plt.colorbar(label='Raw feature deviation / train SD');plt.xlabel('Original feature');plt.ylabel('Cluster');plt.title('Cluster profiles in original features');fig('01_cluster_profiles')
+    plt.colorbar(label='Deviation / train SD');plt.xlabel('Original feature');plt.ylabel('Cluster');plt.title('Cluster profiles in original features');fig('01_cluster_profiles')
     plt.figure(figsize=(8,4));plt.scatter(diag.margin,diag.distance,c=diag.stability,cmap='viridis',vmin=0,vmax=1)
     plt.colorbar(label='Assignment stability');plt.axvline(cfg['boundary_threshold'],ls='--',label='Boundary threshold')
     plt.xlabel('Normalized boundary margin');plt.ylabel('Distance in PCA(6)');plt.title('Distance and boundary measure different properties');plt.legend();fig('02_distance_boundary')

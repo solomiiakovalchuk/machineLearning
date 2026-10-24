@@ -26,6 +26,12 @@ def validate_artifacts(paths, train_ids, test_ids, X, labels, scores, k):
     if set(train_ids) & set(test_ids):
         raise ValueError('train/test overlap')
     X, labels = np.asarray(X), np.asarray(labels)
+    signals=['if30','ifpca','rec','combined']
+    required={'id',*[f'score_{s}' for s in signals],*[f'pct_{s}' for s in signals]}
+    if not required.issubset(scores.columns):
+        raise ValueError('missing required score columns')
+    if not all(pd.api.types.is_numeric_dtype(scores[c]) for c in required):
+        raise ValueError('nonnumeric score column')
     if X.ndim != 2 or len(X) != len(train_ids) or labels.shape != (len(X),):
         raise ValueError('incompatible matrix shapes')
     if not np.isfinite(X).all() or not np.isfinite(scores.select_dtypes('number')).all().all():
@@ -108,6 +114,12 @@ def jaccard(a,b):
 
 def apply_action_policy(scores, rules):
     """First matched rule determines action, every matching condition is retained."""
+    for rule in rules:
+        if rule['operator'] not in ('ge','lt') or not np.isfinite(rule['threshold']):
+            raise ValueError('invalid policy operator or threshold')
+        if rule['column'] not in scores or not pd.api.types.is_numeric_dtype(scores[rule['column']]):
+            raise ValueError('policy column must be numeric')
+        if not np.isfinite(scores[rule['column']]).all():raise ValueError('nonfinite policy input')
     result=[]
     for _,row in scores.iterrows():
         triggered=[]
