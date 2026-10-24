@@ -128,7 +128,8 @@ def run():
     # Distinct cards across the three categories; sorting within ties is explicit.
     cards=[];used=set()
     ranked=scores.sort_values(['pct_combined','score_rec','id'],ascending=[False,False,True])
-    disagree=scores.assign(gap=(scores.pct_ifpca-scores.pct_rec).abs()).sort_values(['gap','id'],ascending=[False,True])
+    disagree=scores.loc[scores.flag_ifpca!=scores.flag_rec].assign(
+        gap=(scores.pct_ifpca-scores.pct_rec).abs()).sort_values(['gap','id'],ascending=[False,True])
     falsepos=scores.loc[reviewed&~truth].sort_values(['pct_combined','id'],ascending=[False,True])
     for category,pool in [('top_combined',ranked),('detector_disagreement',disagree),('false_positive',falsepos)]:
         chosen=pool.loc[~pool.id.isin(used)].head(5)

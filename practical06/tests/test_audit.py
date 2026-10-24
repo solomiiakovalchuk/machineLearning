@@ -71,5 +71,11 @@ class TestAudit(unittest.TestCase):
         self.assertEqual(len(list((ROOT/'figures').glob('*.png'))),7)
         self.assertEqual(len(pd.read_csv(ROOT/'results/object_stability.csv')),455)
         self.assertEqual(len(pd.read_csv(ROOT/'results/cluster_profiles.csv')),60)
+    def test_disagreement_cards_really_disagree(self):
+        cards=pd.read_csv(ROOT/'results/anomaly_cards.csv')
+        scores=pd.read_csv(ROOT/'results/scores_actions.csv').set_index('id')
+        ids=cards.loc[cards.category.eq('detector_disagreement'),'id']
+        self.assertEqual(len(ids),5)
+        self.assertTrue((scores.loc[ids,'flag_ifpca']!=scores.loc[ids,'flag_rec']).all())
 
 if __name__=='__main__':unittest.main()
