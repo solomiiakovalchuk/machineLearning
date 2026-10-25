@@ -4,25 +4,29 @@
       "family": "lrl2",
       "params": {
         "C": 0.01
-      }
+      },
+      "candidate_id": "manual_00"
     },
     {
       "family": "lrl2",
       "params": {
         "C": 0.1
-      }
+      },
+      "candidate_id": "manual_01"
     },
     {
       "family": "lrl2",
       "params": {
         "C": 1.0
-      }
+      },
+      "candidate_id": "manual_02"
     },
     {
       "family": "lrl2",
       "params": {
         "C": 10.0
-      }
+      },
+      "candidate_id": "manual_03"
     },
     {
       "family": "rf",
@@ -30,7 +34,8 @@
         "n_estimators": 64,
         "max_depth": 5,
         "min_samples_leaf": 1
-      }
+      },
+      "candidate_id": "manual_04"
     },
     {
       "family": "rf",
@@ -38,7 +43,8 @@
         "n_estimators": 64,
         "max_depth": 10,
         "min_samples_leaf": 1
-      }
+      },
+      "candidate_id": "manual_05"
     },
     {
       "family": "rf",
@@ -46,7 +52,8 @@
         "n_estimators": 64,
         "max_depth": null,
         "min_samples_leaf": 1
-      }
+      },
+      "candidate_id": "manual_06"
     },
     {
       "family": "rf",
@@ -54,7 +61,8 @@
         "n_estimators": 64,
         "max_depth": null,
         "min_samples_leaf": 3
-      }
+      },
+      "candidate_id": "manual_07"
     },
     {
       "family": "histgb",
@@ -62,7 +70,8 @@
         "learning_rate": 0.03,
         "max_iter": 100,
         "max_leaf_nodes": 7
-      }
+      },
+      "candidate_id": "manual_08"
     },
     {
       "family": "histgb",
@@ -70,7 +79,8 @@
         "learning_rate": 0.1,
         "max_iter": 100,
         "max_leaf_nodes": 7
-      }
+      },
+      "candidate_id": "manual_09"
     },
     {
       "family": "histgb",
@@ -78,7 +88,8 @@
         "learning_rate": 0.1,
         "max_iter": 100,
         "max_leaf_nodes": 15
-      }
+      },
+      "candidate_id": "manual_10"
     },
     {
       "family": "histgb",
@@ -86,7 +97,8 @@
         "learning_rate": 0.1,
         "max_iter": 150,
         "max_leaf_nodes": 31
-      }
+      },
+      "candidate_id": "manual_11"
     }
   ],
   "flaml_space": {
@@ -167,8 +179,8 @@
     }
   },
   "config": {
-    "dataset": "UCI Optdigits, optdigits.tra only (new source partition)",
-    "target": "digit == 5",
+    "dataset": "sklearn.load_breast_cancer (UCI Breast Cancer Wisconsin Diagnostic)",
+    "target": "diagnosis == malignant",
     "seed": 42,
     "test_size": 0.2,
     "outer_folds": 5,
@@ -183,7 +195,8 @@
       44
     ],
     "n_jobs": 1,
-    "test_used_in_search": false,
+    "test_used_for_search": false,
+    "test_used_for_selection": false,
     "tie_break": "smaller serialized pipeline, then lower p95 single latency, then manual",
     "families": [
       "lrl2",

@@ -2,131 +2,128 @@
   {
     "fold": 0,
     "branch": "manual",
-    "inner_ap": 0.9976972211158456,
+    "inner_ap": 0.9935168341251929,
+    "spec": {
+      "family": "lrl2",
+      "params": {
+        "C": 1.0
+      },
+      "candidate_id": "manual_02"
+    }
+  },
+  {
+    "fold": 0,
+    "branch": "automl",
+    "inner_ap": 0.9925251042312955,
+    "spec": {
+      "family": "lrl2",
+      "params": {
+        "C": 0.1,
+        "class_weight": null
+      },
+      "candidate_id": "automl_seed42_trial10"
+    }
+  },
+  {
+    "fold": 1,
+    "branch": "manual",
+    "inner_ap": 0.989901378743609,
+    "spec": {
+      "family": "lrl2",
+      "params": {
+        "C": 0.1
+      },
+      "candidate_id": "manual_01"
+    }
+  },
+  {
+    "fold": 1,
+    "branch": "automl",
+    "inner_ap": 0.9899013787436088,
+    "spec": {
+      "family": "lrl2",
+      "params": {
+        "C": 0.1,
+        "class_weight": null
+      },
+      "candidate_id": "automl_seed42_trial10"
+    }
+  },
+  {
+    "fold": 2,
+    "branch": "manual",
+    "inner_ap": 0.9907281459944358,
     "spec": {
       "family": "histgb",
       "params": {
         "learning_rate": 0.1,
         "max_iter": 100,
         "max_leaf_nodes": 7
-      }
-    }
-  },
-  {
-    "fold": 0,
-    "branch": "automl",
-    "inner_ap": 0.9991030004388459,
-    "spec": {
-      "family": "extra_tree",
-      "params": {
-        "n_estimators": 32,
-        "max_depth": 10,
-        "min_samples_leaf": 1
-      }
-    }
-  },
-  {
-    "fold": 1,
-    "branch": "manual",
-    "inner_ap": 0.9969639753754466,
-    "spec": {
-      "family": "rf",
-      "params": {
-        "n_estimators": 64,
-        "max_depth": 10,
-        "min_samples_leaf": 1
-      }
-    }
-  },
-  {
-    "fold": 1,
-    "branch": "automl",
-    "inner_ap": 0.9974183734557348,
-    "spec": {
-      "family": "extra_tree",
-      "params": {
-        "n_estimators": 32,
-        "max_depth": 10,
-        "min_samples_leaf": 1
-      }
-    }
-  },
-  {
-    "fold": 2,
-    "branch": "manual",
-    "inner_ap": 0.99780516084626,
-    "spec": {
-      "family": "rf",
-      "params": {
-        "n_estimators": 64,
-        "max_depth": null,
-        "min_samples_leaf": 3
-      }
+      },
+      "candidate_id": "manual_09"
     }
   },
   {
     "fold": 2,
     "branch": "automl",
-    "inner_ap": 0.997782256536625,
+    "inner_ap": 0.9898919093105267,
     "spec": {
-      "family": "extra_tree",
+      "family": "lrl2",
       "params": {
-        "n_estimators": 32,
-        "max_depth": 10,
-        "min_samples_leaf": 1
-      }
+        "C": 0.1,
+        "class_weight": null
+      },
+      "candidate_id": "automl_seed42_trial10"
     }
   },
   {
     "fold": 3,
     "branch": "manual",
-    "inner_ap": 0.9975438786179822,
+    "inner_ap": 0.996077633109353,
     "spec": {
-      "family": "rf",
+      "family": "lrl2",
       "params": {
-        "n_estimators": 64,
-        "max_depth": 10,
-        "min_samples_leaf": 1
-      }
+        "C": 1.0
+      },
+      "candidate_id": "manual_02"
     }
   },
   {
     "fold": 3,
     "branch": "automl",
-    "inner_ap": 0.9975196370566671,
+    "inner_ap": 0.9950114469716611,
     "spec": {
-      "family": "rf",
+      "family": "lrl2",
       "params": {
-        "n_estimators": 32,
-        "max_depth": 10,
-        "min_samples_leaf": 1
-      }
+        "C": 0.1,
+        "class_weight": null
+      },
+      "candidate_id": "automl_seed42_trial10"
     }
   },
   {
     "fold": 4,
     "branch": "manual",
-    "inner_ap": 0.9965048003399749,
+    "inner_ap": 0.9905095515300931,
     "spec": {
-      "family": "histgb",
+      "family": "lrl2",
       "params": {
-        "learning_rate": 0.1,
-        "max_iter": 150,
-        "max_leaf_nodes": 31
-      }
+        "C": 0.1
+      },
+      "candidate_id": "manual_01"
     }
   },
   {
     "fold": 4,
     "branch": "automl",
-    "inner_ap": 0.9948629343077396,
+    "inner_ap": 0.9905095515300932,
     "spec": {
-      "family": "extra_tree",
+      "family": "lrl2",
       "params": {
-        "n_estimators": 32,
-        "max_depth": 10,
-        "min_samples_leaf": 1
-      }
+        "C": 0.1,
+        "class_weight": null
+      },
+      "candidate_id": "automl_seed42_trial10"
     }
   }
 ]

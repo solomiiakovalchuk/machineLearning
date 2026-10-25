@@ -1,395 +1,223 @@
 {
   "features": [
     {
-      "name": "pixel_0_0",
+      "name": "radius_mean",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 6.981,
+      "max": 28.11
     },
     {
-      "name": "pixel_0_1",
+      "name": "texture_mean",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 9.71,
+      "max": 39.28
     },
     {
-      "name": "pixel_0_2",
+      "name": "perimeter_mean",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 43.79,
+      "max": 188.5
     },
     {
-      "name": "pixel_0_3",
+      "name": "area_mean",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 143.5,
+      "max": 2501.0
     },
     {
-      "name": "pixel_0_4",
+      "name": "smoothness_mean",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.06251,
+      "max": 0.1634
     },
     {
-      "name": "pixel_0_5",
+      "name": "compactness_mean",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.01938,
+      "max": 0.3454
     },
     {
-      "name": "pixel_0_6",
+      "name": "concavity_mean",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.0,
+      "max": 0.4268
     },
     {
-      "name": "pixel_0_7",
+      "name": "concave_points_mean",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.0,
+      "max": 0.2012
     },
     {
-      "name": "pixel_1_0",
+      "name": "symmetry_mean",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.106,
+      "max": 0.304
     },
     {
-      "name": "pixel_1_1",
+      "name": "fractal_dimension_mean",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.05024,
+      "max": 0.09744
     },
     {
-      "name": "pixel_1_2",
+      "name": "radius_se",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.1115,
+      "max": 2.873
     },
     {
-      "name": "pixel_1_3",
+      "name": "texture_se",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.3602,
+      "max": 4.885
     },
     {
-      "name": "pixel_1_4",
+      "name": "perimeter_se",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.757,
+      "max": 21.98
     },
     {
-      "name": "pixel_1_5",
+      "name": "area_se",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 6.802,
+      "max": 542.2
     },
     {
-      "name": "pixel_1_6",
+      "name": "smoothness_se",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.001713,
+      "max": 0.03113
     },
     {
-      "name": "pixel_1_7",
+      "name": "compactness_se",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.002252,
+      "max": 0.1064
     },
     {
-      "name": "pixel_2_0",
+      "name": "concavity_se",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.0,
+      "max": 0.396
     },
     {
-      "name": "pixel_2_1",
+      "name": "concave_points_se",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.0,
+      "max": 0.05279
     },
     {
-      "name": "pixel_2_2",
+      "name": "symmetry_se",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.007882,
+      "max": 0.07895
     },
     {
-      "name": "pixel_2_3",
+      "name": "fractal_dimension_se",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.0008948,
+      "max": 0.02984
     },
     {
-      "name": "pixel_2_4",
+      "name": "radius_worst",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 7.93,
+      "max": 36.04
     },
     {
-      "name": "pixel_2_5",
+      "name": "texture_worst",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 12.02,
+      "max": 49.54
     },
     {
-      "name": "pixel_2_6",
+      "name": "perimeter_worst",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 50.41,
+      "max": 251.2
     },
     {
-      "name": "pixel_2_7",
+      "name": "area_worst",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 185.2,
+      "max": 4254.0
     },
     {
-      "name": "pixel_3_0",
+      "name": "smoothness_worst",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.07117,
+      "max": 0.2226
     },
     {
-      "name": "pixel_3_1",
+      "name": "compactness_worst",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.02729,
+      "max": 1.058
     },
     {
-      "name": "pixel_3_2",
+      "name": "concavity_worst",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.0,
+      "max": 1.252
     },
     {
-      "name": "pixel_3_3",
+      "name": "concave_points_worst",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.0,
+      "max": 0.291
     },
     {
-      "name": "pixel_3_4",
+      "name": "symmetry_worst",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.1565,
+      "max": 0.6638
     },
     {
-      "name": "pixel_3_5",
+      "name": "fractal_dimension_worst",
       "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_3_6",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_3_7",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_4_0",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_4_1",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_4_2",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_4_3",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_4_4",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_4_5",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_4_6",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_4_7",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_5_0",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_5_1",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_5_2",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_5_3",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_5_4",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_5_5",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_5_6",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_5_7",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_6_0",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_6_1",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_6_2",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_6_3",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_6_4",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_6_5",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_6_6",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_6_7",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_7_0",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_7_1",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_7_2",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_7_3",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_7_4",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_7_5",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_7_6",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
-    },
-    {
-      "name": "pixel_7_7",
-      "dtype": "float64",
-      "min": 0,
-      "max": 16
+      "required": true,
+      "min": 0.05504,
+      "max": 0.2075
     }
   ],
   "order_required": true,
   "shape": [
     null,
-    64
+    30
   ],
-  "positive_class": "digit 5",
+  "positive_class": "malignant (y=1)",
+  "threshold": 0.5,
+  "constraints": "finite, non-negative, ordered as listed",
   "missing": "rejected at serving boundary; training pipeline includes median imputation"
 }

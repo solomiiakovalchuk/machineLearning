@@ -1,15 +1,15 @@
 {
   "difference_automl_minus_manual": [
-    0.012464890667521544,
-    0.0005108780108781241,
-    -0.0005149498124416008,
-    -2.1761392729247042e-05,
-    0.0017412935323382062
+    0.0034648418190804664,
+    0.0,
+    0.009800624149899684,
+    -0.0032711006764651884,
+    0.0
   ],
-  "mean_difference": 0.0028360702011134054,
+  "mean_difference": 0.0019988730585029924,
   "bootstrap_interval_95": [
-    -0.0001125088798927143,
-    0.007724203144492248
+    -0.0013084402705860754,
+    0.005999154751408153
   ],
   "epsilon": 0.01,
   "interval_limitation": "Five dependent folds; descriptive fold bootstrap, not independent-sample CI or equivalence proof."

@@ -1,16 +1,10 @@
 # Джерело даних ЛР № 6
 
-`optdigits.tra` — оригінальний CSV без заголовка з [UCI Optical Recognition of Handwritten Digits](https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits), файл із [офіційного архіву](https://archive.ics.uci.edu/static/public/80/optical+recognition+of+handwritten+digits.zip).
-Автори: E. Alpaydin та C. Kaynak; ліцензія UCI CC BY 4.0 (із зазначенням джерела).
+Набір: [UCI Breast Cancer Wisconsin (Diagnostic)](https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic).
+Автори: W. Wolberg, W. Street, O. Mangasarian; ліцензія CC BY 4.0 (із зазначенням джерела).
 
-3823 рядки: 64 цілочислові інтенсивності блоків 8×8 (0–16) та остання колонка — цифра 0–9.
-Задача цієї роботи: остання колонка дорівнює 5 проти решти. ID — номер рядка саме у `optdigits.tra`, з нуля.
-Файл невеликий, збережений без модифікації для автономного відтворення; SHA-256 — у `../results/data_provenance.json`.
-
-Використовується лише **optdigits.tra**, не `optdigits.tes`, на якому побудований `sklearn.load_digits`.
-Згідно з UCI, історичний train і test отримано від різних груп авторів. Усередині нашої частини немає ID автора,
-тому власний випадковий stratified split не доводить узагальнення на нових авторів.
-Перетин векторів ознак із попереднім sklearn-набором і дублікати всередині поточного джерела перевіряються до split.
-
-Перехід на це джерело виправляє виявлене використання частини майбутнього test у пробному API-запуску.
-Початковий протокол, результат і причина заміни залишилися в Git (`1a3af08`); моделі та висновки поточного звіту стосуються нового джерела.
+Дані беруться з вбудованої функції `sklearn.datasets.load_breast_cancer`, тому файл у репозиторії не потрібен.
+Розмір: 569 записів, 30 числових ознак (характеристики ядер клітин за цифровими зображеннями тонкоголкової аспірації, FNA);
+212 злоякісних (malignant) та 357 доброякісних (benign). Позитивний клас задачі — malignant (`y = 1`, у sklearn це `target == 0`).
+ID об'єкта — номер рядка в `load_breast_cancer`, з нуля. SHA-256 сирих даних, версія sklearn і примітка про попереднє використання
+набору в інших лабораторних — у `../results/data_provenance.json`.

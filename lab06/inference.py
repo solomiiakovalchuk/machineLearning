@@ -7,8 +7,8 @@ import numpy as np
 
 def predict(model,X):
     X=np.asarray(X,float)
-    if X.ndim!=2 or X.shape[1]!=64:raise ValueError('expected n x 64 ordered pixels')
-    if not np.isfinite(X).all() or (X<0).any() or (X>16).any():raise ValueError('pixels must be finite and in [0,16]')
+    if X.ndim!=2 or X.shape[1]!=30 or len(X)==0:raise ValueError('expected n x 30 ordered features (see data_schema.json)')
+    if not np.isfinite(X).all() or (X<0).any():raise ValueError('features must be finite and non-negative')
     return model.predict_proba(X)[:,1]
 
 

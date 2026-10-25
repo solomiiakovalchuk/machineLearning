@@ -1,0 +1,29 @@
+{
+  "AUDIT_ONLY": true,
+  "note": "Evaluated after the decision freeze. Not used for selection, tuning or reporting of the selected model.",
+  "branch": "manual",
+  "candidate_id": "manual_02",
+  "family": "lrl2",
+  "n": 114,
+  "positive_n": 42,
+  "threshold": 0.5,
+  "ap": 0.994273631904294,
+  "roc_auc": 0.996031746031746,
+  "f1": 0.9512195121951219,
+  "precision": 0.975,
+  "recall": 0.9285714285714286,
+  "balanced_accuracy": 0.9573412698412699,
+  "brier": 0.021313139001192274,
+  "log_loss": 0.0772650126161056,
+  "confusion_matrix": [
+    [
+      71,
+      1
+    ],
+    [
+      3,
+      39
+    ]
+  ],
+  "decision_sha256": "62caba19558d196bdefb4b1b459d8d6ba1809f5d1f0aa9b7450401380a5a584c"
+}

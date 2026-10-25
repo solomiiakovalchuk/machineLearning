@@ -1,5 +1,5 @@
 category,n
-both_correct,3021
-both_wrong,21
-only_manual_correct,10
-only_automl_correct,6
+both_correct,439
+both_wrong,12
+only_automl_correct,3
+only_manual_correct,1

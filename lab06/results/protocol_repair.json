@@ -1,6 +1,0 @@
-{
-  "discarded_commit": "1a3af08",
-  "probe_ids": "0..599 in sklearn.load_digits",
-  "initial_holdout_probe_overlap": 111,
-  "repair": "Fresh UCI optdigits.tra; search contract preserved"
-}

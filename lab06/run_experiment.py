@@ -9,7 +9,6 @@ import sklearn, scipy, flaml
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from sklearn.datasets import load_digits
 from sklearn.dummy import DummyClassifier
 from sklearn.model_selection import train_test_split,StratifiedKFold
 from sklearn.metrics import average_precision_score,confusion_matrix
@@ -28,30 +27,34 @@ def run():
     def dump(value,path):path.write_text(json.dumps(value,indent=2,ensure_ascii=False,default=lambda x:x.item()),encoding='utf-8')
     def save(df,name):df.to_csv(R/f'{name}.csv',index=False)
     def figure(name):plt.tight_layout();plt.savefig(F/f'{name}.png',dpi=150);plt.close()
-    Xall,yall=E.load_data(ROOT/'data/optdigits.tra')
-    old_X,old_digits=load_digits(return_X_y=True)
-    _,old_test=train_test_split(np.arange(len(old_digits)),test_size=.2,stratify=(old_digits==5).astype(int),random_state=42)
-    dump({'discarded_commit':'1a3af08','probe_ids':'0..599 in sklearn.load_digits',
-          'initial_holdout_probe_overlap':len(set(range(600))&set(old_test)),
-          'repair':'Fresh UCI optdigits.tra; search contract preserved'},R/'protocol_repair.json')
-    old_rows={row.tobytes() for row in old_X.astype(float)}
-    overlap=sum(row.tobytes() in old_rows for row in Xall)
-    assert overlap==0, 'new source overlaps the previously explored sklearn data'
-    assert len({row.tobytes() for row in Xall})==len(Xall), 'duplicate feature rows require group-aware splitting'
-    dump({'source':'UCI optdigits.tra','source_sha256':E.sha256_file(ROOT/'data/optdigits.tra'),
-          'previous_source':'sklearn.load_digits (UCI optdigits.tes)',
-          'exact_feature_overlap_previous_source':overlap,'n':len(Xall),
-          'reason':'Repair API smoke-test contamination; preserve search space, metric, epsilon and model seeds.'},R/'data_provenance.json')
+    E.check_test_flags(cfg)
+    Xall,yall,names=E.load_data()
     train_ids,test_ids=train_test_split(np.arange(len(yall)),test_size=cfg['test_size'],stratify=yall,random_state=42)
     assert not set(train_ids)&set(test_ids)
     # No EDA, model fitting or prediction accesses Xall[test_ids] before decision freeze below.
     X,y=Xall[train_ids],yall[train_ids]
-    names=[f'pixel_{i//8}_{i%8}' for i in range(64)]
+    provenance={'source':'UCI Breast Cancer Wisconsin (Diagnostic)','url':'https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic',
+                'authors':'W. Wolberg, W. Street, O. Mangasarian','license':'CC BY 4.0','access':'sklearn.datasets.load_breast_cancer',
+                'sklearn_version':sklearn.__version__,'n':int(len(yall)),'n_features':int(Xall.shape[1]),
+                'class_counts':{'malignant':int(yall.sum()),'benign':int(len(yall)-yall.sum())},
+                'raw_x_target_sha256':E.raw_data_sha256(),'raw_hash_definition':'sha256(ascontiguousarray(data).tobytes() + ascontiguousarray(target).tobytes()) of load_breast_cancer',
+                'duplicate_rows':int(len(Xall)-len(np.unique(Xall,axis=0))),'object_id':'row index in load_breast_cancer',
+                'reuse_note':('The same public dataset was used in earlier course labs (lab01, lab05, practical05/06), so the lab06 test part is untouched '
+                              'only within this experiment. The lab06 search space, metric, epsilon and tie-break were fixed in the config before this run '
+                              'and were not tuned on results of earlier labs.')}
+    lab05_split=ROOT.parent/'lab05/results/split_ids.csv'
+    if lab05_split.exists():
+        prev=pd.read_csv(lab05_split)
+        if {'id','part'}<=set(prev.columns):
+            provenance['lab05_split_overlap']={'source':'lab05/results/split_ids.csv (ids only, no features or models read)',
+                'lab06_test_ids_in_lab05_train':int(np.isin(test_ids,prev[prev.part.eq('train')].id).sum()),
+                'lab06_test_ids_in_lab05_test':int(np.isin(test_ids,prev[prev.part.eq('test')].id).sum()),'lab06_test_n':int(len(test_ids))}
+    dump(provenance,R/'data_provenance.json')
     split=pd.DataFrame({'id':np.r_[train_ids,test_ids],'part':['train']*len(train_ids)+['test']*len(test_ids)})
     save(split,'split_ids')
     dump({'train_n':len(X),'features':X.shape[1],'positive_n':int(y.sum()),'missing_n':int(np.isnan(X).sum()),
           'constant_features':[names[i] for i in np.flatnonzero(X.std(axis=0)==0)],
-          'min':float(X.min()),'max':float(X.max()),'positive_class':'digit 5'},R/'train_eda.json')
+          'min':float(X.min()),'max':float(X.max()),'positive_class':'malignant (y=1)'},R/'train_eda.json')
     dump({'manual':E.manual_specs(),'flaml_space':E.SPACE,'config':cfg},R/'search_contract.json')
     oof=pd.DataFrame({'id':train_ids,'y':y,'fold':-1,'manual':np.nan,'automl':np.nan,'baseline':np.nan})
     folds=[];histories=[];budgets=[];importance=[];fitted_specs=[];split_contract=[];fit_audits=[]
@@ -124,19 +127,28 @@ def run():
           'pairwise_disagreement':disagreements},R/'seed_disagreement.json')
     eng=pd.DataFrame(engineering);save(eng,'engineering')
     delta=compare['mean_difference'];eps=cfg['epsilon']
-    if delta>eps:selected='automl';reason='Mean paired AP advantage exceeds predeclared epsilon'
-    elif delta < -eps:selected='manual';reason='Mean paired AP advantage exceeds predeclared epsilon'
+    if delta>eps:selected='automl';reason=f'AutoML mean paired outer-CV AP advantage {delta:+.6f} exceeds predeclared epsilon {eps}'
+    elif delta < -eps:selected='manual';reason=f'Manual mean paired outer-CV AP advantage {-delta:.6f} exceeds predeclared epsilon {eps}'
     else:
         selected=eng.sort_values(['size_bytes','single_p95_ms','branch']).iloc[0].branch
-        reason='Mean AP difference within decision tie region; apply size, then single-object p95 latency, then Manual. This is not proof of equivalence.'
-    decision={'selected_branch':selected,'spec':final_specs[selected],'reason':reason,'epsilon':eps,
-              'cv_evidence':compare,'test_metrics_present':False,'config_sha256':E.sha256_file(ROOT/'configs/experiment.json'),
-              'limitations':['single small historical Digits collection','no writer IDs; writer-independent performance unverified',
-                             'fixed threshold 0.5; AP advantage does not guarantee recall advantage','limited 12-trial search']}
+        reason=(f'Mean paired AP difference {delta:+.6f} is within epsilon {eps}; tie-break applied: '
+                f'{cfg["tie_break"]}. This is not proof of equivalence.')
+    sel_ap=foldtable[foldtable.branch.eq(selected)].ap
+    sel_spec=final_specs[selected]
+    decision={'selected_branch':selected,'candidate_id':sel_spec['candidate_id'],'family':sel_spec['family'],'params':sel_spec['params'],
+              'spec':sel_spec,'cv_ap_mean':float(sel_ap.mean()),'cv_ap_std':float(sel_ap.std(ddof=1)),
+              'paired_difference':compare,'cv_evidence':compare,'epsilon':eps,'tie_break':cfg['tie_break'],'reason':reason,
+              'test_metrics_present':False,'config_sha256':E.sha256_file(ROOT/'configs/experiment.json'),
+              'limitations':['small single-source dataset of 569 FNA images; performance on other laboratories, scanners or populations is unverified',
+                             'dataset was already seen in earlier course labs; the lab06 test part is untouched only within this experiment',
+                             'random stratified split without patient or time grouping information; dependence between records cannot be excluded',
+                             'fixed threshold 0.5; AP advantage does not guarantee recall advantage',
+                             'limited 12-trial search budget per branch and per search',
+                             'educational model; forbidden for diagnosis or clinical decisions']}
     dump(decision,R/'decision_record.json');decision_hash=E.sha256_file(R/'decision_record.json')
     (R/'decision.sha256').write_text(decision_hash+'\n')
     print('Decision frozen:',selected,decision_hash,flush=True)
-    # Test opened once, only the chosen pipeline. Never use the other finalist on test to choose again.
+    # Test opened once for the chosen pipeline; the decision file is already hashed.
     xt,yt=Xall[test_ids],yall[test_ids]
     p=final_models[selected].predict_proba(xt)[:,1]
     test={'branch':selected,'n':len(yt),'positive_n':int(yt.sum()),'threshold':cfg['threshold'],
@@ -144,9 +156,18 @@ def run():
           'confusion_matrix':confusion_matrix(yt,p>=cfg['threshold']).tolist(), 'decision_sha256':decision_hash}
     dump(test,R/'test_metrics.json');save(pd.DataFrame({'id':test_ids,'y':yt,'probability':p}),'test_predictions')
     assert E.sha256_file(R/'decision_record.json')==decision_hash
+    # Audit only: the other finalist on test after the freeze. Never used for selection; the decision file is final.
+    other='manual' if selected=='automl' else 'automl'
+    po=final_models[other].predict_proba(xt)[:,1]
+    dump({'AUDIT_ONLY':True,'note':'Evaluated after the decision freeze. Not used for selection, tuning or reporting of the selected model.',
+          'branch':other,'candidate_id':final_specs[other]['candidate_id'],'family':final_specs[other]['family'],
+          'n':len(yt),'positive_n':int(yt.sum()),'threshold':cfg['threshold'],**E.probability_metrics(yt,po,cfg['threshold']),
+          'confusion_matrix':confusion_matrix(yt,po>=cfg['threshold']).tolist(),'decision_sha256':decision_hash},R/'test_audit_other_finalist.json')
+    assert E.sha256_file(R/'decision_record.json')==decision_hash
     for branch,m in final_models.items():
         np.testing.assert_allclose(joblib.load(R/'models'/f'{branch}.joblib').predict_proba(X[:5]),m.predict_proba(X[:5]))
-    save(pd.concat(histories,ignore_index=True),'candidate_history');save(pd.DataFrame(budgets),'budget_audit')
+    history_all=pd.concat(histories,ignore_index=True)
+    save(history_all,'candidate_history');save(pd.DataFrame(budgets),'budget_audit')
     save(pd.DataFrame(fit_audits),'flaml_fit_audit');dump(split_contract,R/'cv_splits.json');dump(fitted_specs,R/'outer_winners.json')
     dump({'python':platform.python_version(),'platform':platform.platform(),'sklearn':sklearn.__version__,
           'numpy':np.__version__,'pandas':pd.__version__,'scipy':scipy.__version__,'flaml':flaml.__version__,
@@ -156,13 +177,15 @@ def run():
     categories=np.select([correct_m&correct_a,~correct_m&~correct_a,correct_m&~correct_a],
                          ['both_correct','both_wrong','only_manual_correct'],default='only_automl_correct')
     behavior=oof.copy();behavior['category']=categories;behavior['probability_gap']=(oof.manual-oof.automl).abs()
-    save(behavior,'oof_behavior');save(behavior.sort_values(['probability_gap','id'],ascending=[False,True]).head(5),'largest_disagreements')
+    save(behavior,'oof_behavior');top5=behavior.sort_values(['probability_gap','id'],ascending=[False,True]).head(5)
+    save(top5,'largest_disagreements')
     save(pd.Series(categories).value_counts().rename_axis('category').reset_index(name='n'),'behavior_summary')
+    lo=max(0.,min(ap.manual.min(),ap.automl.min())-.02);hi=min(max(ap.manual.max(),ap.automl.max()),1.)+.01
     fig,axes=plt.subplots(1,2,figsize=(9,4),gridspec_kw={'width_ratios':[2,1]})
     axes[0].boxplot([ap.manual,ap.automl],tick_labels=['Manual','AutoML'])
-    axes[0].set(xlabel='Search branch',ylabel='Outer validation AP',title='Nested CV: model comparison',ylim=(.97,1.002))
-    axes[1].boxplot([ap.baseline],tick_labels=['Baseline'])
-    axes[1].set(xlabel='Prior baseline',ylabel='Outer validation AP',title='Baseline on separate scale',ylim=(0,.12))
+    axes[0].set(xlabel='Search branch',ylabel='Outer validation AP',title='Nested CV: model comparison',ylim=(lo,hi))
+    axes[1].boxplot([ap.baseline],tick_labels=['Prior baseline'])
+    axes[1].set(xlabel='Prior baseline',ylabel='Outer validation AP',title='Baseline on separate scale',ylim=(0,max(.1,float(ap.baseline.max())*1.3)))
     figure('01_ap_distribution')
     plt.figure(figsize=(7,4))
     for i,row in ap.iterrows():plt.plot([0,1],[row.manual,row.automl],'o-',label=f'Fold {i+1}')
@@ -176,50 +199,94 @@ def run():
         matrix=confusion_matrix(y,oof[branch]>=.5);ax.imshow(matrix,cmap='Blues')
         for i in range(2):
             for j in range(2):ax.text(j,i,str(matrix[i,j]),ha='center',va='center')
-        ax.set(xticks=[0,1],yticks=[0,1],xlabel='Prediction (1=digit 5)',ylabel='True label',title=f'{branch}: OOF, threshold=0.5')
+        ax.set(xticks=[0,1],yticks=[0,1],xlabel='Prediction (1=malignant)',ylabel='True label (1=malignant)',title=f'{branch}: OOF, threshold=0.5')
     figure('04_confusion_matrices')
     means=imp.groupby(['branch','feature']).importance.mean().unstack('branch')
     top=set(means.manual.nlargest(10).index)|set(means.automl.nlargest(10).index)
-    means.loc[sorted(top)].plot.barh(figsize=(9,7));plt.xlabel('Held-out AP decrease after permutation');plt.ylabel('Pixel feature');plt.title('Outer-fold permutation importance, top-10 union');figure('05_permutation_importance')
+    means.loc[sorted(top)].plot.barh(figsize=(9,7));plt.xlabel('Held-out AP decrease after permutation');plt.ylabel('Feature');plt.title('Outer-fold permutation importance, top-10 union');plt.legend(title='Branch');figure('05_permutation_importance')
     plt.figure(figsize=(7,4));plt.scatter(oof.manual,oof.automl,c=y,cmap='coolwarm',s=12)
-    plt.plot([0,1],[0,1],'--',label='Agreement');plt.xlabel('Manual OOF probability');plt.ylabel('AutoML OOF probability');plt.title('Largest differences are inspected by object ID');plt.legend();plt.colorbar(label='True digit 5');figure('06_probability_disagreement')
-    fig,axes=plt.subplots(1,5,figsize=(12,3))
-    for ax,row in zip(axes,behavior.nlargest(5,'probability_gap').itertuples()):
-        ax.imshow(Xall[row.id].reshape(8,8),cmap='gray_r',vmin=0,vmax=16)
-        ax.set(title=f'ID {row.id}, y={row.y}\nM={row.manual:.3f}, A={row.automl:.3f}',xlabel='Pixel column',ylabel='Pixel row')
-    figure('07_disagreement_objects')
+    plt.plot([0,1],[0,1],'--',label='Agreement');plt.xlabel('Manual OOF probability');plt.ylabel('AutoML OOF probability');plt.title('Largest differences are inspected by object ID');plt.legend();plt.colorbar(label='True label (1=malignant)');figure('06_probability_disagreement')
+    # Training-only standardisation (mean/std of the training part) of the five largest-disagreement OOF objects.
+    mu,sd=X.mean(axis=0),X.std(axis=0);sd=np.where(sd==0,1.,sd)
+    zs=(Xall[top5.id.to_numpy()]-mu)/sd
+    cols=np.argsort(-np.abs(zs).max(axis=0))[:10]
+    fig,ax=plt.subplots(figsize=(11,4.5));vmax=max(1.,float(np.abs(zs[:,cols]).max()))
+    im=ax.imshow(zs[:,cols],cmap='coolwarm',vmin=-vmax,vmax=vmax,aspect='auto')
+    for i in range(zs.shape[0]):
+        for j,c in enumerate(cols):ax.text(j,i,f'{zs[i,c]:.1f}',ha='center',va='center',fontsize=8)
+    ax.set(xticks=range(len(cols)),yticks=range(len(zs)),title='Largest-disagreement OOF objects: train z-scores, 10 most extreme features',
+           xlabel='Feature',ylabel='Object')
+    ax.set_xticklabels([names[c] for c in cols],rotation=45,ha='right')
+    ax.set_yticklabels([f'ID {r.id}, y={r.y}\nM={r.manual:.3f}, A={r.automl:.3f}' for r in top5.itertuples()])
+    fig.colorbar(im,ax=ax,label='z-score (training mean/std)');figure('07_disagreement_objects')
+    final_hist=history_all[history_all.stage.eq('final_seed_42')]
+    palette=dict(zip(sorted(final_hist.family.unique()),plt.cm.tab10.colors))
+    fig,axes=plt.subplots(1,2,figsize=(11,4),sharey=True)
+    for ax,branch in zip(axes,['manual','automl']):
+        h=final_hist[final_hist.branch.eq(branch)].sort_values('trial')
+        ax.plot(h.trial,h.inner_ap,color='gray',lw=.6,zorder=0)
+        for family,g in h.groupby('family'):ax.scatter(g.trial,g.inner_ap,color=palette[family],label=family,s=40)
+        ax.set(xlabel='Trial order',ylabel='Inner CV AP',title=f'{branch}: seed-42 final search');ax.legend(title='Family',fontsize=8)
+    figure('08_candidate_history')
     # Handoff contains a raw-input sklearn pipeline, not a FLAML search object.
     for source,name in [(R/'models'/f'{selected}.joblib','pipeline.joblib'),(R/'decision_record.json','decision_record.json'),
                         (R/'decision.sha256','decision.sha256'),(ROOT/'configs/experiment.json','config.json'),
                         (R/'split_ids.csv','split_ids.csv'),(R/'fold_metrics.csv','cv_metrics.csv'),(R/'test_metrics.json','test_metrics.json'),
                         (R/'data_provenance.json','data_provenance.json'),(R/'environment.json','environment.json')]:shutil.copyfile(source,H/name)
-    dump({'features':[{'name':n,'dtype':'float64','min':0,'max':16} for n in names],
-          'order_required':True,'shape':[None,64],'positive_class':'digit 5',
+    dump({'features':[{'name':n,'dtype':'float64','required':True,'min':float(X[:,i].min()),'max':float(X[:,i].max())} for i,n in enumerate(names)],
+          'order_required':True,'shape':[None,len(names)],'positive_class':'malignant (y=1)','threshold':cfg['threshold'],
+          'constraints':'finite, non-negative, ordered as listed',
           'missing':'rejected at serving boundary; training pipeline includes median imputation'},H/'data_schema.json')
     example={'input':X[:3].tolist(),'expected_probability':final_models[selected].predict_proba(X[:3])[:,1].tolist(),'threshold':.5}
     dump(example,H/'inference_example.json')
     shutil.copyfile(ROOT/'inference.py',H/'inference.py');shutil.copyfile(ROOT/'requirements.txt',H/'requirements.txt')
-    card=f'''# Model card — UCI Optdigits, digit 5 vs rest
+    cm=test['confusion_matrix'];params_text=json.dumps(sel_spec['params'],default=lambda x:x.item())
+    card=f'''# Model card — Breast Cancer Wisconsin (Diagnostic), malignant vs benign
 
-Навчальний прототип маршрутизації зображень 8×8 для оператора OCR. Один об'єкт — 64 пікселі 0–16.
-Позитивний клас: цифра 5; походження: UCI Optical Recognition of Handwritten Digits, optdigits.tra (3823 записи).
-Увага: це інша частина першоджерела, ніж 1797 записів sklearn.load_digits; її використано після виявленого забруднення попереднього test.
-Ліцензія першоджерела UCI: CC BY 4.0; див. https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits
+## Призначення
+Навчальний прототип ранжування записів FNA-аналізу за ймовірністю класу malignant для подальшого розгляду експертом.
+Це НЕ діагностичний інструмент і не підтримка клінічних рішень.
 
-Вибрана гілка: {selected}; сімейство: {final_specs[selected]['family']}.
-Причина: {reason}
-Рішення SHA-256: {decision_hash}. Test AP={test['ap']:.6f}, F1={test['f1']:.6f}, recall={test['recall']:.6f}.
-Поріг 0.5 зафіксований до оцінювання. Pipeline навчається на train, не перевчався на test.
-CV, параметри, схема, середовище і приклад інференсу — у цьому пакеті та ../results/.
+## Дані
+UCI Breast Cancer Wisconsin (Diagnostic), https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic (CC BY 4.0;
+W. Wolberg, W. Street, O. Mangasarian), через `sklearn.datasets.load_breast_cancer`. 569 записів, 30 числових ознак, 212 malignant (y=1) / 357 benign.
+Split: train {len(train_ids)} / test {len(test_ids)} (stratified, seed 42). Той самий публічний набір використовувався в попередніх ЛР курсу,
+тому test «не торкнутий» лише в межах цього експерименту. Хеш сирих даних і примітка — у data_provenance.json.
 
-Обмеження: мала історична колекція, немає ID авторів для group split; нові почерки та сканери не перевірені.
-Це не розпізнавач усіх цифр. Не використовувати для автоматичного ухвалення фінансових чи інших значущих рішень.
-За невідомої схеми, виходу пікселів за діапазон або дрейфу — зупинити інференс і переглянути модель з оператором.
-До ЛР7: перевіряти схему, версії, хеш рішення, контрольний прогноз; перед реальним застосуванням потрібен незалежний набір авторів.
+## Вибрана модель
+Гілка: {selected}; кандидат: {sel_spec['candidate_id']}; сімейство: {sel_spec['family']}; параметри: {params_text}.
+Причина вибору: {reason}
+SHA-256 рішення: {decision_hash} (рішення записане й захешоване до відкриття test).
+
+## Якість
+Вкладена CV (5 зовнішніх фолдів, AP): {selected} {decision['cv_ap_mean']:.4f} ± {decision['cv_ap_std']:.4f};
+різниця AutoML − Manual = {delta:+.4f}, 95% bootstrap [{interval[0]:+.4f}, {interval[1]:+.4f}] (5 залежних фолдів, лише описово).
+Test (один раз, поріг {cfg['threshold']}): AP={test['ap']:.4f}, ROC-AUC={test['roc_auc']:.4f}, F1={test['f1']:.4f}, recall={test['recall']:.4f}, precision={test['precision']:.4f}, Brier={test['brier']:.4f}.
+Матриця помилок test [[TN, FP], [FN, TP]] = {cm}.
+
+## Поріг
+Фіксований {cfg['threshold']} (y=1 — malignant), заданий до оцінювання; підбір порога чи калібрування на test не виконувалися.
+
+## Обмеження
+- мала колекція (569 зображень FNA з одного джерела); перенесення на інші лабораторії, сканери й популяції не перевірене;
+- набір уже використовувався в попередніх ЛР; test «не торкнутий» лише в межах цього експерименту;
+- випадковий stratified split без інформації про пацієнтів чи час; залежність між записами не виключена;
+- фіксований поріг 0.5; перевага за AP не гарантує перевагу за recall;
+- пошук обмежений 12 випробуваннями; 5 залежних фолдів не дають незалежного довірчого інтервалу.
+
+## Заборонені застосування
+Діагностика, скринінг, тріаж пацієнтів, будь-які клінічні чи інші значущі автоматичні рішення без експерта.
+
+## Що перевірити в ЛР7
+Схему входу (30 ознак у порядку data_schema.json, скінченні, невід'ємні), версії бібліотек (environment.json), SHA-256 рішення,
+контрольний прогноз з inference_example.json, дрейф ознак відносно train min/max, та що відповіді сервісу не подаються як діагноз.
 '''
     (H/'MODEL_CARD.md').write_text(card,encoding='utf-8')
-    dump({'selected':selected,'decision_sha256':decision_hash,'cv':grouped.reset_index().to_dict(orient='records'),
-          'test':test,'comparison':compare,'top10_jaccard':E_top_jaccard(means)},R/'summary.json')
+    dump({'selected':selected,'candidate_id':sel_spec['candidate_id'],'family':sel_spec['family'],'reason':reason,
+          'decision_sha256':decision_hash,'cv':grouped.reset_index().to_dict(orient='records'),
+          'selected_cv_ap_mean':decision['cv_ap_mean'],'selected_cv_ap_std':decision['cv_ap_std'],
+          'test':test,'comparison':compare,'top10_jaccard':E_top_jaccard(means),'stability':seed_rows,
+          'engineering':eng.to_dict(orient='records'),'seed_disagreement':disagreements,'test_audit_other_finalist':other},R/'summary.json')
     print(json.dumps({'comparison':compare,'selected':selected,'test':test},indent=2))
 
 

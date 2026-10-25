@@ -1,25 +1,25 @@
 {
   "branch": "automl",
-  "n": 765,
-  "positive_n": 75,
+  "n": 114,
+  "positive_n": 42,
   "threshold": 0.5,
-  "ap": 0.9936444845929939,
-  "roc_auc": 0.9989371980676328,
-  "f1": 0.9583333333333334,
+  "ap": 0.9965986394557824,
+  "roc_auc": 0.9976851851851852,
+  "f1": 0.975609756097561,
   "precision": 1.0,
-  "recall": 0.92,
-  "balanced_accuracy": 0.96,
-  "brier": 0.010467026070698202,
-  "log_loss": 0.05293371447498632,
+  "recall": 0.9523809523809523,
+  "balanced_accuracy": 0.9761904761904762,
+  "brier": 0.023365471064195696,
+  "log_loss": 0.09478851049675145,
   "confusion_matrix": [
     [
-      690,
+      72,
       0
     ],
     [
-      6,
-      69
+      2,
+      40
     ]
   ],
-  "decision_sha256": "c2fd106f1bbd6d18514fea26bc2e3f899bd8a3ffa086e74d4b90ee0bec8c813e"
+  "decision_sha256": "62caba19558d196bdefb4b1b459d8d6ba1809f5d1f0aa9b7450401380a5a584c"
 }

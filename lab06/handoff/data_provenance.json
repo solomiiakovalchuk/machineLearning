@@ -1,8 +1,25 @@
 {
-  "source": "UCI optdigits.tra",
-  "source_sha256": "e1b683cc211604fe8fd8c4417e6a69f31380e0c61d4af22e93cc21e9257ffedd",
-  "previous_source": "sklearn.load_digits (UCI optdigits.tes)",
-  "exact_feature_overlap_previous_source": 0,
-  "n": 3823,
-  "reason": "Repair API smoke-test contamination; preserve search space, metric, epsilon and model seeds."
+  "source": "UCI Breast Cancer Wisconsin (Diagnostic)",
+  "url": "https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic",
+  "authors": "W. Wolberg, W. Street, O. Mangasarian",
+  "license": "CC BY 4.0",
+  "access": "sklearn.datasets.load_breast_cancer",
+  "sklearn_version": "1.9.0",
+  "n": 569,
+  "n_features": 30,
+  "class_counts": {
+    "malignant": 212,
+    "benign": 357
+  },
+  "raw_x_target_sha256": "25e2eb7b7a8745b1bde5ba18bc4969983d2e2f403291ecd5bde4a29ef30c3859",
+  "raw_hash_definition": "sha256(ascontiguousarray(data).tobytes() + ascontiguousarray(target).tobytes()) of load_breast_cancer",
+  "duplicate_rows": 0,
+  "object_id": "row index in load_breast_cancer",
+  "reuse_note": "The same public dataset was used in earlier course labs (lab01, lab05, practical05/06), so the lab06 test part is untouched only within this experiment. The lab06 search space, metric, epsilon and tie-break were fixed in the config before this run and were not tuned on results of earlier labs.",
+  "lab05_split_overlap": {
+    "source": "lab05/results/split_ids.csv (ids only, no features or models read)",
+    "lab06_test_ids_in_lab05_train": 90,
+    "lab06_test_ids_in_lab05_test": 24,
+    "lab06_test_n": 114
+  }
 }
