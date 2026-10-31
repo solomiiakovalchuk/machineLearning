@@ -302,12 +302,26 @@ def git_text(repo, *args):
 
 
 def worktree_matches_commit(repo, commit, relpath):
-    """Does the working-tree file have the same git blob as `commit:relpath`?"""
-    blob = git_text(repo, "rev-parse", f"{commit}:{relpath}")
-    now = git_text(repo, "hash-object", str(Path(repo) / relpath))
-    if blob is None or now is None:
+    """Compare working-tree bytes with the blob stored in `commit:relpath`.
+
+    Returns "identical" (same bytes), "line_endings_only" (equal after CRLF -> LF, e.g. core.autocrlf checkout),
+    "different", or None when git or the file is unavailable. Raw bytes are compared: git's own hash-object
+    applies autocrlf filters and would report a false mismatch.
+    """
+    try:
+        p = subprocess.run(["git", "-C", str(repo), "show", f"{commit}:{relpath}"], capture_output=True, timeout=60)
+    except Exception:
         return None
-    return blob == now
+    f = Path(repo) / relpath
+    if p.returncode != 0 or not f.is_file():
+        return None
+    now = f.read_bytes()
+    if now == p.stdout:
+        return "identical"
+    crlf, lf = bytes([13, 10]), bytes([10])
+    if now.replace(crlf, lf) == p.stdout.replace(crlf, lf):
+        return "line_endings_only"
+    return "different"
 
 
 def commits_adding(repo, relpaths):

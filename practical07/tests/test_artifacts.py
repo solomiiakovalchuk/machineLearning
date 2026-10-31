@@ -68,6 +68,20 @@ class TestRequiredArtifacts(unittest.TestCase):
             self.assertEqual(A.sha256_file(H / name), info["sha256"], name)
 
 
+class TestFrozenObject(unittest.TestCase):
+    def test_frozen_files_match_commit(self):
+        f = csv("frozen_object.csv")
+        self.assertEqual(len(f), len(CFG["object"]["handoff_files"]))
+        self.assertFalse((f.worktree_vs_commit == "different").any())
+        self.assertFalse(f.worktree_vs_commit.isna().any())
+        s = json.loads((R / "summary.json").read_text(encoding="utf-8"))["frozen_info"]
+        self.assertTrue(s["all_blobs_match_frozen_commit"])
+        self.assertEqual(s["frozen_commit"], CFG["object"]["frozen_commit"])
+
+    def test_decision_hash_file_equals_decision_bytes(self):
+        self.assertEqual(A.sha256_file(H / "decision_record.json"), (H / "decision.sha256").read_text().strip())
+
+
 class TestMetricsArtifacts(unittest.TestCase):
     def test_reproduction_within_tolerance(self):
         d = csv("reproduction_delta.csv")

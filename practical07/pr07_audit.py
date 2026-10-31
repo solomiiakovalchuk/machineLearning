@@ -109,14 +109,17 @@ def stage_frozen():
         first = git("log", "--diff-filter=A", "--format=%h %aI", "--", rel)
         rows.append({"file": name, "sha256": A.sha256_file(f) if f.is_file() else None,
                      "bytes": f.stat().st_size if f.is_file() else 0,
-                     "git_blob_equals_frozen_commit": same,
+                     "worktree_vs_commit": same,
                      "added_in_commit": (first.splitlines()[-1] if first else None)})
     df = pd.DataFrame(rows)
     df.to_csv(RES / "frozen_object.csv", index=False)
     status = git("status", "--porcelain", "--", CFG["object"]["dir"])
     info = {"frozen_commit": commit, "commit_exists": exists, "repo_head_at_audit": head,
             "lab06_working_tree_clean": (status == "") if status is not None else None,
-            "all_blobs_match_frozen_commit": bool(df.git_blob_equals_frozen_commit.fillna(False).all()),
+            "all_blobs_match_frozen_commit": bool(df.worktree_vs_commit.isin(["identical", "line_endings_only"]).all()),
+            "files_identical_bytes": int((df.worktree_vs_commit == "identical").sum()),
+            "files_line_endings_only": int((df.worktree_vs_commit == "line_endings_only").sum()),
+            "files_different": int((df.worktree_vs_commit == "different").sum()),
             "n_files": len(df)}
     key = [f"{CFG['object']['dir']}/handoff/{n}" for n in ("decision.sha256", "decision_record.json", "pipeline.joblib", "test_metrics.json")]
     info["handoff_files_added_in_n_commits"] = len(A.commits_adding(REPO, key))
