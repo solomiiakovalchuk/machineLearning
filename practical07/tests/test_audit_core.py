@@ -108,6 +108,22 @@ class TestMetrics(unittest.TestCase):
         self.assertEqual((lo, hi), A.bootstrap_ci(v, 2000, 0.05, 1))
         self.assertEqual(A.bootstrap_ci([0.5, 0.5, 0.5], 100, 0.05, 1), (0.5, 0.5))
 
+    def test_bootstrap_metric_ci_is_clipped_to_unit_interval(self):
+        """Regression: on the real lab06 test split the AP interval had an upper bound of 1.0000000000000002."""
+        import joblib
+        import pandas as pd
+        from sklearn.datasets import load_breast_cancer
+        d = load_breast_cancer()
+        y = A.audit_target(d.target)
+        split = pd.read_csv(ROOT.parent / "lab06" / "handoff" / "split_ids.csv")
+        te = split[split.part == "test"].id.to_numpy()
+        model = joblib.load(ROOT.parent / "lab06" / "handoff" / "pipeline.joblib")
+        p = model.predict_proba(d.data[te])[:, 1]
+        for metric in ("ap", "roc_auc", "recall"):
+            lo, hi = A.bootstrap_metric_ci(y[te], p, metric, n_boot=400, seed=42)
+            self.assertLessEqual(hi, 1.0, metric)
+            self.assertGreaterEqual(lo, 0.0, metric)
+
     def test_disagreement_and_dp(self):
         self.assertEqual(A.prediction_disagreement([0, 1, 1, 0], [0, 1, 0, 1]), 0.5)
         self.assertAlmostEqual(A.mean_abs_proba_diff([0.1, 0.5], [0.3, 0.4]), 0.15)

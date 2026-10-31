@@ -179,6 +179,23 @@ class TestErrorsStabilityNegative(unittest.TestCase):
         self.assertEqual(A.sha256_file(ROOT / "fixed" / "pipeline.joblib"), A.sha256_file(H / "pipeline.joblib"))
         self.assertEqual((ROOT / "fixed" / "pipeline.sha256").read_text().split()[0], A.sha256_file(H / "pipeline.joblib"))
 
+    def test_unit_interval_metrics_in_ci_file(self):
+        ci = json.loads((R / "test_bootstrap_ci.json").read_text(encoding="utf-8"))
+        for k in ("ap", "roc_auc", "recall"):
+            self.assertLessEqual(ci[k][1], 1.0, k)
+            self.assertLessEqual(ci[k][0], ci[k][1])
+
+    def test_selection_finding_wording_matches_interval(self):
+        """Regression: the finding must not call a difference 'noise' when its bootstrap interval excludes zero."""
+        s = json.loads((R / "summary.json").read_text(encoding="utf-8"))["repeated_cv_paired"]
+        f = csv("findings.csv")
+        row = f[f.problem.str.contains("практично довільний")].iloc[0]
+        excludes_zero = s["paired_diff_ci_high"] < 0 or s["paired_diff_ci_low"] > 0
+        if excludes_zero:
+            self.assertIn("систематично", row.evidence)
+            self.assertNotIn("в межах шуму", row.evidence)
+            self.assertNotIn("підтверджує довільність", row.evidence)
+
     def test_ai_checks_at_least_three(self):
         self.assertGreaterEqual(len(csv("ai_recommendation_checks.csv")), 3)
 

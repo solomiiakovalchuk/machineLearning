@@ -114,7 +114,7 @@ def stage_frozen():
     df = pd.DataFrame(rows)
     df.to_csv(RES / "frozen_object.csv", index=False)
     status = git("status", "--porcelain", "--", CFG["object"]["dir"])
-    info = {"frozen_commit": commit, "commit_exists": exists, "repo_head_at_audit": head,
+    info = {"frozen_commit": commit, "commit_exists": exists, "repo_head_at_run_informational": head,
             "lab06_working_tree_clean": (status == "") if status is not None else None,
             "all_blobs_match_frozen_commit": bool(df.worktree_vs_commit.isin(["identical", "line_endings_only"]).all()),
             "files_identical_bytes": int((df.worktree_vs_commit == "identical").sum()),
@@ -743,7 +743,7 @@ def build_findings(F):
         "Test ЛР6 не є «свіжим» щодо попередніх робіт курсу: більшість test-записів були у train ЛР5; набір публічний і багаторазово використаний.",
         f"{F['lab06_test_in_lab05_train']} із {F['test_n']} test-ID ЛР6 були у train ЛР5 (перераховано за results/split_ids.csv ЛР5, лише ID; збігається з data_provenance.json). Модель ЛР5 була без вчителя і не використовувала мітки, тож пряме зараження не доведено, але незалежність test обмежена.",
         "medium", "Для заяв про узагальнення потрібен зовнішній набір; у висновках позначати test як внутрішню перевірку.", status="accepted_risk")
-    add(F["test_recall_ci_width"] > 0.1,
+    add(F["test_recall_ci_width"] > CFG["finding_thresholds"]["recall_ci_width"],
         "Test малий (42 malignant): метрики за порогом 0.5 мають широкий інтервал, а 2 пропущені malignant становлять 4.8% recall.",
         f"Bootstrap 95% для recall: [{F['recall_ci'][0]:.3f}, {F['recall_ci'][1]:.3f}]; AP: [{F['ap_ci'][0]:.4f}, {F['ap_ci'][1]:.4f}]. FN: ID {F['test_error_ids']} з p={F['test_error_p']}. Пороги 0.5 не підбирався під ціну FN.",
         "medium", "Не трактувати test як доказ рівня recall; для застосувань із дорогим FN окремо обирати поріг на CV, не на test.", status="accepted_risk")
@@ -759,10 +759,13 @@ def build_findings(F):
         "Заява «test використано один раз» неточна: на test також оцінено другого фіналіста (AUDIT_ONLY) після freeze.",
         "results/test_audit_other_finalist.json (AUDIT_ONLY=true): Manual C=1.0, AP=0.9943. Вибір не змінювався, README розкриває це в §10.",
         "low", "Формулювати: «для вибраної моделі один раз; другий фіналіст — лише аудит».", status="documented")
+    sig = F["paired_diff_hi"] < 0 or F["paired_diff_lo"] > 0
     add(F["freq_C01"] < 1.0,
-        f"Вибір C=0.1 є практично довільним: на 20 seeds внутрішньої 3-fold CV (train) C=0.1 обирається у {F['freq_C01']*100:.0f}% випадків, C=1.0 — у {F['freq_C1']*100:.0f}%.",
-        f"selection_control.csv: частоти найкращого C = {F['freq_best_C']}; різниця AP між C=0.1 і C=1.0 на повторній CV: {F['paired_diff_mean']:+.4f} (інтервал [{F['paired_diff_lo']:+.4f}, {F['paired_diff_hi']:+.4f}]) — в межах ε. Це підтверджує чесне формулювання lab06 про довільність tie-break.",
-        "low", "Не інтерпретувати C=0.1 як оптимальний; якість еквівалентна C=1.0.", status="documented")
+        f"Вибір C=0.1 практично довільний: на 20 seeds внутрішньої 3-fold CV (train) C=0.1 обирається у {F['freq_C01']*100:.0f}% випадків, C=1.0 — у {F['freq_C1']*100:.0f}%.",
+        f"selection_control.csv: частоти найкращого C = {F['freq_best_C']}. Повторна CV 5×3: ΔAP(C=0.1 − C=1.0) = {F['paired_diff_mean']:+.4f}, інтервал [{F['paired_diff_lo']:+.4f}, {F['paired_diff_hi']:+.4f}] "
+        + ("не містить 0, тобто C=1.0 систематично, але мізерно кращий (|Δ| ≪ ε=0.01; 15 залежних фолдів, інтервал описовий)." if sig else "містить 0 (в межах ε).")
+        + " Це узгоджується з чесним формулюванням lab06 про довільність tie-break.",
+        "low", "Не інтерпретувати C=0.1 як оптимальний; якість практично еквівалентна C=1.0.", status="documented")
     for i, f in enumerate(out, 1):
         f["id"] = f"F-{i:02d}"
     return out
@@ -803,11 +806,11 @@ def make_figures(D, corr, ind, folds, summ, objs, runs, imp_summ, errs, neg, cla
         ax.scatter(np.full_like(v, k) + np.random.default_rng(1).uniform(-0.12, 0.12, len(v)), v, color=col, alpha=0.7, label=f"{name}: 15 fold-оцінок")
         s = summ[(summ.model == name) & (summ.metric == "ap")].iloc[0]
         ax.errorbar([k], [s["mean"]], yerr=[[s["mean"] - s.ci_low], [s.ci_high - s["mean"]]], color="black", capsize=6, lw=2)
-    ax.axhline(F["dummy_test_ap"], color=GRAY, ls="--", label=f"dummy AP={F['dummy_test_ap']:.3f}")
     ax.axhline(F["frozen_test_ap"], color=GREEN, ls=":", label=f"test AP={F['frozen_test_ap']:.4f}")
     ax.set_xticks([0, 1]); ax.set_xticklabels(["frozen (C=0.1)", "контроль (C=1.0)"]); ax.set_ylabel("AP на валідаційних folds")
-    ax.set_title("Repeated CV 5×3 (train): розподіл AP та bootstrap-інтервал середнього"); ax.legend(fontsize=8, loc="center right")
-    ax.set_ylim(0.3, 1.02); fig_save(fig, "03_repeated_cv.png")
+    ax.set_title(f"Repeated CV 5×3 (train): AP і bootstrap-інтервал середнього\n(dummy-baseline AP = {F['dummy_test_ap']:.3f} — поза шкалою)", fontsize=10)
+    ax.set_ylim(0.978, 1.003); ax.set_xlim(-0.5, 1.5)
+    ax.legend(fontsize=8, loc="lower left"); fig_save(fig, "03_repeated_cv.png")
     # 4 confusion
     fig, axs = plt.subplots(1, 2, figsize=(7.5, 3.6))
     for ax, name, title in zip(axs, ("dummy_prior", "frozen_joblib"), ("Dummy (prior)", "Заморожена модель")):
@@ -822,11 +825,11 @@ def make_figures(D, corr, ind, folds, summ, objs, runs, imp_summ, errs, neg, cla
     fig, axs = plt.subplots(1, 2, figsize=(9, 4))
     axs[0].plot(runs.run, runs.ap, "o-", color=BLUE, label="AP на test"); axs[0].plot(runs.run, runs.recall, "s--", color=ORANGE, label="recall на test")
     axs[0].axhline(F["frozen_test_ap"], color=GREEN, ls=":", label="еталон: заморожена модель (AP)")
-    axs[0].set_xlabel("номер bootstrap-перенавчання"); axs[0].set_ylabel("метрика"); axs[0].set_title("Метрики між перенавчаннями"); axs[0].legend(fontsize=8)
+    axs[0].set_xlabel("номер bootstrap-перенавчання"); axs[0].set_ylabel("метрика"); axs[0].set_title("Метрики між перенавчаннями"); axs[0].legend(fontsize=8, loc="lower center", bbox_to_anchor=(0.5, -0.25), ncol=1)
     axs[1].bar(runs.run, runs.disagreement_D, color=BLUE, label="D (частка розбіжних міток)")
     ax2 = axs[1].twinx(); ax2.plot(runs.run, runs.mean_abs_dp, "o-", color=RED, label="середній |Δp|"); ax2.spines["right"].set_visible(True)
     axs[1].set_xlabel("номер bootstrap-перенавчання"); axs[1].set_ylabel("D"); ax2.set_ylabel("середній |Δp|"); axs[1].set_title("Розбіжність прогнозів з еталоном")
-    h1, l1 = axs[1].get_legend_handles_labels(); h2, l2 = ax2.get_legend_handles_labels(); axs[1].legend(h1 + h2, l1 + l2, fontsize=8, loc="upper right")
+    h1, l1 = axs[1].get_legend_handles_labels(); h2, l2 = ax2.get_legend_handles_labels(); axs[1].legend(h1 + h2, l1 + l2, fontsize=8, loc="lower center", bbox_to_anchor=(0.5, -0.25))
     fig_save(fig, "05_stability.png")
     # 6 importance
     top = imp_summ.head(10).iloc[::-1]
@@ -857,21 +860,21 @@ def make_figures(D, corr, ind, folds, summ, objs, runs, imp_summ, errs, neg, cla
     ax.set_xlim(0, 2); ax.set_ylim(-len(neg), 0); ax.set_xticks([0.5, 1.5]); ax.set_xticklabels(["оригінал (lab06)", "виправлена версія"]); ax.xaxis.tick_top()
     ax.set_yticks([-i - 0.5 for i in range(len(neg))]); ax.set_yticklabels(neg.scenario, fontsize=8)
     for s in ax.spines.values(): s.set_visible(False)
-    ax.set_title("Негативні сценарії: ✗ — поведінка відрізняється від очікуваної", pad=28); fig_save(fig, "08_negative_tests.png")
+    ax.set_title("Негативні сценарії (✗ — не відповідає очікуванню)", pad=28); fig_save(fig, "08_negative_tests.png")
     # 9 claims & findings
     fig, axs = plt.subplots(1, 2, figsize=(9, 3.8))
     vc = claims_df.verdict.value_counts().reindex(A.CLAIM_VERDICTS, fill_value=0)
     axs[0].bar(range(4), vc.values, color=[GREEN, ORANGE, RED, GRAY]); axs[0].set_xticks(range(4)); axs[0].set_xticklabels(["підтв.", "частково", "спрост.", "не перев."], fontsize=8)
-    axs[0].set_ylabel("кількість тверджень"); axs[0].set_title("Вердикти реєстру тверджень")
+    axs[0].set_ylabel("кількість тверджень"); axs[0].set_title("Вердикти реєстру тверджень"); axs[0].yaxis.get_major_locator().set_params(integer=True)
     sv = find_df.severity.value_counts().reindex(A.SEVERITIES, fill_value=0)
     axs[1].bar(range(4), sv.values, color=["#742a2a", RED, ORANGE, GRAY]); axs[1].set_xticks(range(4)); axs[1].set_xticklabels(A.SEVERITIES)
-    axs[1].set_ylabel("кількість знахідок"); axs[1].set_title("Знахідки за критичністю")
+    axs[1].set_ylabel("кількість знахідок"); axs[1].set_title("Знахідки за критичністю"); axs[1].yaxis.get_major_locator().set_params(integer=True)
     fig_save(fig, "09_claims_findings.png")
     # 10 selection control
     fig, ax = plt.subplots(figsize=(7, 4))
     for C, col in zip(CFG["selection_control"]["C_grid"], (GRAY, BLUE, ORANGE, GREEN)):
         ax.plot(sel.seed, sel[f"ap_C{C}"], "o-", color=col, ms=3, label=f"C={C}")
-    ax.set_xlabel("seed внутрішньої 3-fold CV"); ax.set_ylabel("середній AP на folds (train)"); ax.set_title("Контроль вибору C: різниці менші за шум між seeds"); ax.legend(fontsize=8, ncol=2)
+    ax.set_xlabel("seed внутрішньої 3-fold CV"); ax.set_ylabel("середній AP на folds (train)"); ax.set_title("Контроль вибору C (3-fold CV на train, 20 seeds)"); ax.legend(fontsize=8, ncol=2)
     fig_save(fig, "10_selection_control.png")
 
 

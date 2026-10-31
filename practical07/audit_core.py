@@ -22,6 +22,7 @@ from serving import validate_record, record_to_vector, ACCEPTED, REJECTED, WARNI
 SEVERITIES = ("critical", "high", "medium", "low")
 CLAIM_VERDICTS = ("підтверджено", "підтверджено частково", "спростовано", "неможливо перевірити")
 AUDIT_VERDICTS = ("прийнято", "прийнято з обмеженнями", "потребує доопрацювання", "відхилено")
+BOUNDED_METRICS = ("ap", "roc_auc", "f1", "precision", "recall", "balanced_accuracy")
 METRIC_KEYS = ("ap", "roc_auc", "f1", "precision", "recall", "balanced_accuracy", "brier", "log_loss")
 
 
@@ -149,7 +150,10 @@ def bootstrap_metric_ci(y, p, metric, n_boot=2000, alpha=0.05, seed=42, threshol
         if y[i].min() == y[i].max():
             continue
         vals.append(metrics_from_proba(y[i], p[i], threshold)[metric])
-    return float(np.quantile(vals, alpha / 2)), float(np.quantile(vals, 1 - alpha / 2))
+    lo, hi = float(np.quantile(vals, alpha / 2)), float(np.quantile(vals, 1 - alpha / 2))
+    if metric in BOUNDED_METRICS:  # float summation can give 1.0000000000000002
+        lo, hi = float(np.clip(lo, 0.0, 1.0)), float(np.clip(hi, 0.0, 1.0))
+    return lo, hi
 
 
 def prediction_disagreement(labels_a, labels_b) -> float:

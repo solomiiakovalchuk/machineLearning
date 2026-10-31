@@ -83,5 +83,8 @@
     "top1_frequency": 0.5,
     "topk_jaccard": 0.6,
     "min_ap_margin_over_baseline": 0.5
+  },
+  "finding_thresholds": {
+    "recall_ci_width": 0.1
   }
 }
