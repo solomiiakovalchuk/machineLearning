@@ -31,7 +31,7 @@
   "legacy_ok": 9,
   "hardened_ok": 15,
   "n_scenarios": 15,
-  "elapsed_s": 102.0,
+  "elapsed_s": 102.2,
   "python": "3.12.0",
   "numpy": "2.2.3",
   "pandas": "3.0.5",
@@ -70,7 +70,31 @@
     "sha256_file": "b63381332edb446557779d0d3042cd4e3be973cbc9fd70a1682513fe9abc315b"
   },
   "clean_run": {
-    "executed": false
+    "executed": true,
+    "A_success": false,
+    "A_pip_exit": 1,
+    "A_run_exit": 0,
+    "A_pip_s": 234.2,
+    "A_n_installed": 112,
+    "A_core": {
+      "numpy": "2.2.3",
+      "scipy": "1.15.3",
+      "scikit-learn": "1.9.0",
+      "joblib": "1.6.0",
+      "threadpoolctl": "3.6.0",
+      "flaml": "2.3.6",
+      "jupyter": null
+    },
+    "B_success": true,
+    "B_pip_exit": 0,
+    "B_pip_s": 204.7,
+    "B_n_installed": 115,
+    "C_success": true,
+    "C_pip_s": 60.4,
+    "C_n_installed": 8,
+    "python": "Python 3.12.0",
+    "A_path_len": 122,
+    "B_path_len": 41
   },
   "graph_modules": [
     "numpy",
