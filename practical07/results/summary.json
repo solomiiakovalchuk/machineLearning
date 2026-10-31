@@ -31,7 +31,7 @@
   "legacy_ok": 9,
   "hardened_ok": 15,
   "n_scenarios": 15,
-  "elapsed_s": 82.4,
+  "elapsed_s": 100.1,
   "python": "3.12.0",
   "numpy": "2.2.3",
   "pandas": "3.0.5",
@@ -45,7 +45,10 @@
     "files_line_endings_only": 10,
     "files_different": 0,
     "n_files": 14,
-    "handoff_files_added_in_n_commits": 1
+    "decision_commit": "35ada0b",
+    "test_metrics_commit": "35ada0b",
+    "model_commit": "35ada0b",
+    "freeze_before_test_provable": false
   },
   "fixed_evaluation": {
     "model_sha256": "b63381332edb446557779d0d3042cd4e3be973cbc9fd70a1682513fe9abc315b",

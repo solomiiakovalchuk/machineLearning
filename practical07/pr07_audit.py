@@ -106,11 +106,11 @@ def stage_frozen():
         f = H / name
         rel = f"{CFG['object']['dir']}/handoff/{name}"
         same = A.worktree_matches_commit(REPO, commit, rel) if exists else None
-        first = git("log", "--diff-filter=A", "--format=%h %aI", "--", rel)
+        last = A.last_change_commit(REPO, commit, rel) if exists else None
         rows.append({"file": name, "sha256": A.sha256_file(f) if f.is_file() else None,
                      "bytes": f.stat().st_size if f.is_file() else 0,
                      "worktree_vs_commit": same,
-                     "added_in_commit": (first.splitlines()[-1] if first else None)})
+                     "last_changed_in_commit": last})
     df = pd.DataFrame(rows)
     df.to_csv(RES / "frozen_object.csv", index=False)
     status = git("status", "--porcelain", "--", CFG["object"]["dir"])
@@ -121,8 +121,11 @@ def stage_frozen():
             "files_line_endings_only": int((df.worktree_vs_commit == "line_endings_only").sum()),
             "files_different": int((df.worktree_vs_commit == "different").sum()),
             "n_files": len(df)}
-    key = [f"{CFG['object']['dir']}/handoff/{n}" for n in ("decision.sha256", "decision_record.json", "pipeline.joblib", "test_metrics.json")]
-    info["handoff_files_added_in_n_commits"] = len(A.commits_adding(REPO, key))
+    rel = lambda n: f"{CFG['object']['dir']}/handoff/{n}"  # noqa: E731
+    info["decision_commit"] = A.last_change_commit(REPO, commit, rel("decision.sha256"))
+    info["test_metrics_commit"] = A.last_change_commit(REPO, commit, rel("test_metrics.json"))
+    info["model_commit"] = A.last_change_commit(REPO, commit, rel("pipeline.joblib"))
+    info["freeze_before_test_provable"] = A.ordering_provable(REPO, commit, rel("decision.sha256"), rel("test_metrics.json"))
     return df, info
 
 
@@ -656,7 +659,7 @@ def build_claims(F):
            {"name": "scaler навчено на train (Δ ≤ 1e-9)", "key": "scaler_mean_delta_train", "op": "le", "value": TOL["coefficient"]},
            {"name": "коефіцієнти після refit на train збігаються (Δ ≤ 1e-9)", "key": "coef_delta_refit_vs_joblib", "op": "le", "value": TOL["coefficient"]},
            {"name": "freeze передує test у коді", "key": "decision_before_test_in_code", "op": "true"},
-           {"name": "час створення рішення доведено незалежно від файлів (різні коміти)", "key": "timing_independently_provable", "op": "true"}], None, 3)
+           {"name": "порядок freeze → test доведено історією git (коміт decision.sha256 раніше за коміт test_metrics.json)", "key": "timing_independently_provable", "op": "true"}], None, 3)
     claim("C-03", "Модель узагальнює на нові дані: CV AP 0.9942 ± 0.0058, test AP 0.9966, значно вище baseline.",
           "lab06/README.md §6, §10; MODEL_CARD.md",
           "Повторна CV 5×3 лише на train; DummyClassifier; leakage scan; перетин із попередніми роботами курсу",
@@ -750,7 +753,7 @@ def build_findings(F):
         "medium", "Описати як обмеження; для реального застосування потрібен груповий split.", status="accepted_risk")
     add(F["timing_independently_provable"] is False,
         "Порядок «freeze → test» доведено лише побічно: рішення, модель і test-метрики потрапили в один коміт, а хеш підтверджує незмінність байтів, не час.",
-        f"git: файли handoff додано у {F['n_add_commits']} коміт(и); статичний порядок рядків у run_experiment.py правильний, scaler.mean_ збігається з train (Δ={F['scaler_mean_delta_train']:.1e}).",
+        f"git: поточний вміст decision.sha256 ({F['decision_commit']}), test_metrics.json ({F['test_metrics_commit']}) і pipeline.joblib ({F['model_commit']}) востаннє змінено в {'одному коміті' if F['decision_commit'] == F['test_metrics_commit'] else 'різних комітах'} (на момент заморожування {CFG['object']['frozen_commit'][:7]}); статичний порядок рядків у run_experiment.py правильний, scaler.mean_ збігається з train (Δ={F['scaler_mean_delta_train']:.1e}).",
         "low", "Для майбутніх робіт фіксувати хеш рішення в окремому, раніше створеному коміті або журналі.", status="documented")
     add(F["n_models_scored_on_test"] > 1,
         "Заява «test використано один раз» неточна: на test також оцінено другого фіналіста (AUDIT_ONLY) після freeze.",
@@ -906,8 +909,8 @@ def main():
         "clean_run": cr,
         "clean_full_install_ok": (cr.get("A_success") and cr.get("B_success")) if cr.get("executed") else None,
         "clean_minimal_ok": cr.get("C_success") if cr.get("executed") else None,
-        "timing_independently_provable": fro["handoff_files_added_in_n_commits"] > 1,
-        "n_add_commits": fro["handoff_files_added_in_n_commits"],
+        "timing_independently_provable": fro["freeze_before_test_provable"],
+        "decision_commit": fro["decision_commit"], "test_metrics_commit": fro["test_metrics_commit"], "model_commit": fro["model_commit"],
         "cv_margin_over_baseline": rcv["cv_ap_mean"] - mt["dummy_test_ap"],
         "cv_ap_diff_to_reported": abs(rcv["cv_ap_mean"] - mt["reported_cv_ap_mean"]),
         "test_ap_minus_cv_min": mt["frozen_test_ap"] - rcv["cv_ap_min"],
@@ -961,7 +964,7 @@ def main():
          "decision": "змінено: сімейство стабільне, але C — ні (знахідка про довільність вибору C)"},
         {"id": "R-3", "recommendation": "Хеш рішення + одноразовий запуск гарантують, що test не впливав на вибір (AI_USAGE §2)", "risk": "Хеш доводить байти, не час і не зв'язок із моделлю",
          "control_test": "scaler.mean_ vs середнє train/усіх даних; refit на train → коефіцієнти; відтворення правила вибору; порядок у коді",
-         "actual_result": f"Δscaler(train)={F['scaler_mean_delta_train']:.1e}, Δscaler(all)={F['scaler_mean_delta_all']:.1e}; Δcoef={F['coef_delta_refit_vs_joblib']:.1e}; правило відтворено={F['decision_rule_reproduced']}; handoff у {F['n_add_commits']} коміті",
+         "actual_result": f"Δscaler(train)={F['scaler_mean_delta_train']:.1e}, Δscaler(all)={F['scaler_mean_delta_all']:.1e}; Δcoef={F['coef_delta_refit_vs_joblib']:.1e}; правило відтворено={F['decision_rule_reproduced']}; handoff-файли рішення й test-метрик у коміті {F['decision_commit']}/{F['test_metrics_commit']}",
          "decision": "прийнято частково: модель відповідає train-only протоколу; час не доведено"},
         {"id": "R-4", "recommendation": "Закріпити у requirements flaml/xgboost/lightgbm, бо FLAML їх імпортує; inference потребує лише sklearn (AI_USAGE §6, README §10)", "risk": "Надлишкові залежності ламають чисте встановлення",
          "control_test": "Чисті venv: повний і мінімальний requirements; скан об'єкта моделі",

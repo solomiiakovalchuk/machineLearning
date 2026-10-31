@@ -53,6 +53,41 @@ class TestGitProvenance(unittest.TestCase):
             (Path(t) / "f.txt").write_bytes(b"a\r\nb\r\n")
             self.assertEqual(A.worktree_matches_commit(t, "HEAD", "f.txt"), "line_endings_only")
 
+    def test_last_change_commit_is_not_the_first_add(self):
+        with tempfile.TemporaryDirectory() as t:
+            new_repo(t)
+            c1 = commit(t, {"a.txt": "1"})
+            c2 = commit(t, {"a.txt": "2", "b.txt": "1"})
+            c3 = commit(t, {"a.txt": "3", "b.txt": "2"})
+            self.assertEqual(A.last_change_commit(t, "HEAD", "a.txt"), c3)
+            self.assertEqual(A.last_change_commit(t, "HEAD", "b.txt"), c3)
+            self.assertNotEqual(A.last_change_commit(t, "HEAD", "a.txt"), c1)
+            self.assertEqual(A.last_change_commit(t, c2, "a.txt"), c2)
+
+    def test_ordering_provable_needs_distinct_earlier_commit(self):
+        with tempfile.TemporaryDirectory() as t:
+            new_repo(t)
+            commit(t, {"dec.txt": "0", "res.txt": "0"})
+            # both files rewritten in ONE commit: ordering cannot be proven although both were "added" long ago
+            commit(t, {"dec.txt": "1", "res.txt": "1"})
+            self.assertFalse(A.ordering_provable(t, "HEAD", "dec.txt", "res.txt"))
+            # decision first, results later: provable
+            commit(t, {"dec.txt": "2"})
+            commit(t, {"res.txt": "2"})
+            self.assertTrue(A.ordering_provable(t, "HEAD", "dec.txt", "res.txt"))
+            # reversed order is not provable
+            self.assertFalse(A.ordering_provable(t, "HEAD", "res.txt", "dec.txt"))
+
+    def test_ordering_not_provable_when_rewritten_together_after_separate_adds(self):
+        """Added in different commits but both rewritten in one later commit (the lab06 situation)."""
+        with tempfile.TemporaryDirectory() as t:
+            new_repo(t)
+            commit(t, {"dec.txt": "0"})
+            commit(t, {"res.txt": "0"})
+            c3 = commit(t, {"dec.txt": "1", "res.txt": "1"})
+            self.assertEqual(A.last_change_commit(t, "HEAD", "dec.txt"), c3)
+            self.assertFalse(A.ordering_provable(t, "HEAD", "dec.txt", "res.txt"))
+
 
 if __name__ == "__main__":
     unittest.main()

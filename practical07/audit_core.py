@@ -324,11 +324,19 @@ def worktree_matches_commit(repo, commit, relpath):
     return "different"
 
 
-def commits_adding(repo, relpaths):
-    """Short hashes of the commits that first added each path."""
-    out = set()
-    for rel in relpaths:
-        log = git_text(repo, "log", "--diff-filter=A", "--format=%h", "--", rel)
-        if log:
-            out.add(log.splitlines()[-1])
-    return out
+def last_change_commit(repo, commit, relpath):
+    """Short hash of the last commit (reachable from `commit`) that changed `relpath`, i.e. the commit of the CURRENT content."""
+    return git_text(repo, "log", "-1", "--format=%h", commit, "--", relpath) or None
+
+
+def ordering_provable(repo, commit, earlier_rel, later_rel) -> bool:
+    """True only if the current `earlier_rel` was committed strictly BEFORE the current `later_rel`.
+
+    A hash file proves unchanged bytes, not time; version control is the only independent clock here.
+    Files rewritten together in one commit are not ordered.
+    """
+    a, b = last_change_commit(repo, commit, earlier_rel), last_change_commit(repo, commit, later_rel)
+    if not a or not b or a == b:
+        return False
+    p = subprocess.run(["git", "-C", str(repo), "merge-base", "--is-ancestor", a, b], capture_output=True)
+    return p.returncode == 0
