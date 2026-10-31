@@ -1,0 +1,7 @@
+# Inference-only requirements (the model is a plain sklearn Pipeline).
+# Versions are the ones recorded in lab06/handoff/environment.json.
+numpy==2.2.3
+scipy==1.15.3
+scikit-learn==1.9.0
+joblib==1.6.0
+threadpoolctl==3.6.0

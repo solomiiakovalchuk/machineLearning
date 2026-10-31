@@ -1,0 +1,16 @@
+scenario,expected,legacy_status,legacy_p,legacy_message,legacy_ok,hardened_status,hardened_p,hardened_message,hardened_ok
+baseline_valid_record,accepted,accepted,0.7168759163903421,,True,accepted,0.7168759163903421,,True
+missing_feature,rejected,rejected,,ValueError: expected n x 30 ordered features (see data_schema.json),True,rejected,,missing features: fractal_dimension_worst,True
+extra_feature,rejected,rejected,,ValueError: expected n x 30 ordered features (see data_schema.json),True,rejected,,unknown features: unknown_field,True
+wrong_type_text,rejected,rejected,,ValueError: could not convert string to float: 'abc',True,rejected,,"area_mean: expected a number, got str",True
+numeric_string,rejected,accepted,0.7168759163903421,,False,rejected,,"radius_mean: expected a number, got str; texture_mean: expected a number, got str; perimet",True
+none_value,rejected,rejected,,ValueError: features must be finite and non-negative,True,rejected,,"area_mean: expected a number, got NoneType",True
+nan_value,rejected,rejected,,ValueError: features must be finite and non-negative,True,rejected,,area_mean: value must be finite,True
+inf_value,rejected,rejected,,ValueError: features must be finite and non-negative,True,rejected,,area_mean: value must be finite,True
+reordered_fields,accepted,accepted,0.7259361268107432,,False,accepted,0.7168759163903421,,True
+out_of_range_x10_radius,accepted_with_warning,accepted,0.9999999098008873,,False,accepted_with_warning,0.9999999098008873,"radius_mean=160.2 outside train range [6.981, 28.11]; area_mean/(pi*radius_mean^2)=0.010 d",True
+negative_radius,rejected,rejected,,ValueError: features must be finite and non-negative,True,rejected,,radius_mean: value must be non-negative,True
+domain_area_inconsistent_with_radius,accepted_with_warning,accepted,0.8174104738286142,,False,accepted_with_warning,0.8174104738286142,area_mean/(pi*radius_mean^2)=6.366 deviates from 1 by more than 0.15,True
+empty_batch,rejected,rejected,,ValueError: expected n x 30 ordered features (see data_schema.json),True,rejected,,ValueError: empty batch,True
+oversized_batch,rejected,accepted,0.7168759163903421,,False,rejected,,ValueError: batch of 10001 exceeds max_batch=10000,True
+substituted_model_file,rejected,accepted,0.9978374649243772,joblib.load has no integrity check,False,rejected,,IntegrityError: model checksum mismatch: expected b63381332edb446557779d0d30,True

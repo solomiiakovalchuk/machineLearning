@@ -1,0 +1,17 @@
+item,path,present,note
+дані: snapshot,lab06/data/README.md,True,дані не копіюються; sklearn.load_breast_cancer + SHA-256 у data_provenance.json
+split ids,lab06/handoff/split_ids.csv,True,
+код навчання,lab06/experiment.py,True,
+код запуску,lab06/run_experiment.py,True,
+конфігурація,lab06/handoff/config.json,True,
+залежності,lab06/handoff/requirements.txt,True,
+модель,lab06/handoff/pipeline.joblib,True,
+схема входу,lab06/handoff/data_schema.json,True,
+контрольний приклад,lab06/handoff/inference_example.json,True,
+inference,lab06/handoff/inference.py,True,
+заявлені результати,lab06/handoff/test_metrics.json,True,
+рішення + хеш,lab06/handoff/decision_record.json,True,
+README з командами,lab06/README.md,True,
+журнал ШІ,lab06/AI_USAGE.md,True,
+model card,lab06/handoff/MODEL_CARD.md,True,
+тести,lab06/tests/test_experiment.py,True,

@@ -1,0 +1,25 @@
+{
+  "model_sha256": "b63381332edb446557779d0d3042cd4e3be973cbc9fd70a1682513fe9abc315b",
+  "identical_to_handoff": true,
+  "n_records": 114,
+  "statuses": {
+    "accepted": 111,
+    "accepted_with_warning": 3
+  },
+  "max_abs_dp_hardened_vs_original": 0.0,
+  "labels_identical": true,
+  "metrics_identical": true,
+  "hardened_ap": 0.9965986394557824,
+  "hardened_roc_auc": 0.9976851851851852,
+  "hardened_cm": [
+    [
+      72,
+      0
+    ],
+    [
+      2,
+      40
+    ]
+  ],
+  "sha256_file": "b63381332edb446557779d0d3042cd4e3be973cbc9fd70a1682513fe9abc315b"
+}

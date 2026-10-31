@@ -1,0 +1,9 @@
+stage,data,used_for_decision,evidence
+"fit (imputer, scaler, LR)","train, 455 записів",так,scaler.mean_ == середнє train (Δ=0.0e+00)
+"selection (family, C)",вкладена CV на train: 5 outer × 3 inner,так,decision_record.json; правило відтворено з fold_metrics.csv
+threshold tuning,не виконувалось; фіксований 0.5,ні,config.json: threshold=0.5
+interpretation (permutation importance),outer-validation частини train,так,lab06 README §8; test не використано
+freeze рішення,decision_record.json + decision.sha256,—,"хеш лише рішення, не моделі"
+test (вибрана модель),"114 записів, один раз для вибраної моделі",оцінка,test_metrics.json
+test (другий фіналіст),"114 записів після freeze, AUDIT_ONLY",оцінка,test_audit_other_finalist.json
+"аудит ПР7: відтворення, stability, помилки",test + train (лише читання/оцінка),оцінка,жодне рішення про модель не змінюється

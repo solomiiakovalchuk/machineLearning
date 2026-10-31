@@ -1,0 +1,15 @@
+check,result,expected,ok
+id overlap train/test,0,0,True
+exact duplicate rows (all data),0,0,True
+identical train/test feature rows,0,0,True
+max |r| with target (signal only),0.7863,< 0.9,True
+test rows closer than near-duplicate distance to a train row,0,0,True
+preprocessing is inside the Pipeline object,SimpleImputer->StandardScaler->LogisticRegression,"imputer, scaler before model",True
+scaler mean = train mean (max |delta|),0.00e+00,<= 1e-9,True
+scaler mean differs from full-data mean (max |delta|),9.986e+00,> 1e-6,True
+scaler n_samples_seen_ equals train size,455,455,True
+config flags test_used_for_search/selection are false,False/False,False/False,True
+run_experiment.py: decision hash written before first Xall[test_ids],line 149 < line 152,freeze < test,True
+decision.sha256 matches decision_record.json,True,True,True
+pipeline.joblib SHA-256 is recorded anywhere in the handoff,False,True,False
+group/patient id or time column available,False,needed to exclude dependence,False

@@ -1,0 +1,87 @@
+{
+  "audit_version": "1.0",
+  "note": "Audit protocol frozen before the first run of pr07_audit.py. Values are not tuned on audit results.",
+  "object": {
+    "dir": "lab06",
+    "frozen_commit": "81445e2e18764af176e48fba231ca857c412f486",
+    "handoff_files": [
+      "MODEL_CARD.md",
+      "config.json",
+      "cv_metrics.csv",
+      "data_provenance.json",
+      "data_schema.json",
+      "decision.sha256",
+      "decision_record.json",
+      "environment.json",
+      "inference.py",
+      "inference_example.json",
+      "pipeline.joblib",
+      "requirements.txt",
+      "split_ids.csv",
+      "test_metrics.json"
+    ]
+  },
+  "seed": 42,
+  "threshold": 0.5,
+  "tolerances": {
+    "metric": 1e-09,
+    "probability": 1e-12,
+    "coefficient": 1e-09
+  },
+  "leakage": {
+    "corr_signal_threshold": 0.9,
+    "near_duplicate_distance": 0.1
+  },
+  "repeated_cv": {
+    "n_splits": 5,
+    "n_repeats": 3
+  },
+  "bootstrap": {
+    "n_boot": 10000,
+    "alpha": 0.05,
+    "n_boot_test": 2000
+  },
+  "stability": {
+    "n_retrains": 20,
+    "permutation_repeats": 5,
+    "top_k": 5
+  },
+  "error_analysis": {
+    "n_near_threshold": 5,
+    "n_confident_oof": 5,
+    "n_unstable": 3
+  },
+  "selection_control": {
+    "C_grid": [
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "inner_folds": 3,
+    "n_seeds": 20,
+    "seed_start": 1000
+  },
+  "equivalence_epsilon": 0.01,
+  "domain": {
+    "area_radius_rel_tol": 0.15,
+    "max_batch": 10000
+  },
+  "severity_scale": {
+    "critical": "results cannot be trusted",
+    "high": "problem substantially changes selection, evaluation or fitness for use",
+    "medium": "limits reproducibility, reliability or maintainability",
+    "low": "local documentation or engineering problem"
+  },
+  "verdict_rule": {
+    "critical_open": "відхилено",
+    "high_open": "потребує доопрацювання",
+    "medium_or_low_open": "прийнято з обмеженнями",
+    "none_open": "прийнято"
+  },
+  "claim_thresholds": {
+    "top1_frequency": 0.5,
+    "topk_jaccard": 0.6,
+    "min_ap_margin_over_baseline": 0.5
+  }
+}
