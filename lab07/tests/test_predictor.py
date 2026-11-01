@@ -70,6 +70,19 @@ class PredictorIntegrationTests(unittest.TestCase):
         with self.assertRaises(BatchSizeError):
             self.predictor.predict_batch([self.example["record"]] * (self.config.max_batch_size + 1))
 
+    def test_extreme_finite_values_are_a_controlled_error(self):
+        # 1e308 is finite (only an out-of-range warning in validation) but StandardScaler overflows to inf.
+        for name in ("smoothness_mean", "fractal_dimension_se", "symmetry_worst"):
+            with self.subTest(name), self.assertRaises(InputValidationError):
+                self.predictor.predict_record(dict(self.example["record"], **{name: 1e308}))
+        with self.assertRaises(InputValidationError):
+            self.predictor.predict_batch([self.example["record"], dict(self.example["record"], smoothness_mean=1e308)])
+
+    def test_large_but_representable_values_still_predict(self):
+        out = self.predictor.predict_record(dict(self.example["record"], radius_mean=1e6))
+        self.assertTrue(0.0 <= out["probability"] <= 1.0)
+        self.assertEqual(len(out["warnings"]), 1)
+
     def test_describe(self):
         d = self.predictor.describe()
         self.assertEqual(d["n_features"], 30)

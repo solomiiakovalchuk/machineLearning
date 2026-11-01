@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import sys
+import warnings
 from pathlib import Path
 
 import numpy as np
@@ -99,7 +100,15 @@ class ProjectPredictor:
 
     def _respond(self, validated: list) -> list:
         matrix = np.array([v.values for v in validated], dtype=float)
-        probabilities = self._model.predict_proba(matrix)[:, 1]
+        try:
+            # Finite but absurdly large inputs overflow inside the scaler; turn that into a contract error.
+            with warnings.catch_warnings(), np.errstate(all="raise"):
+                warnings.simplefilter("error", RuntimeWarning)
+                probabilities = self._model.predict_proba(matrix)[:, 1]
+        except (ValueError, ArithmeticError, RuntimeWarning) as exc:
+            raise InputValidationError("input values are outside the numeric range the model can process") from exc
+        if not np.isfinite(probabilities).all():
+            raise InputValidationError("model produced a non-finite probability for this input")
         cfg = self._config
         return [{
             "probability": float(p),

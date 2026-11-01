@@ -142,6 +142,12 @@ class CliTests(unittest.TestCase):
         self.assertEqual(r.returncode, 3, r.stderr)
         self.assertIn("duplicate key", r.stderr)
 
+    def test_extreme_value_exit_code_is_input_validation(self):
+        rec = dict(self.example["record"], smoothness_mean=1e308)
+        r = run_cli("predict", self.write("huge.json", json.dumps(rec)))
+        self.assertEqual(r.returncode, 5, r.stderr)
+        self.assertTrue(r.stderr.startswith("error[InputValidationError]"), r.stderr)
+
     def test_verify_command(self):
         r = run_cli("verify")
         self.assertEqual(r.returncode, 0, r.stderr)
