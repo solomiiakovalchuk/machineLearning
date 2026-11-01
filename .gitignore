@@ -20,3 +20,6 @@ Thumbs.db
 lab04/results/*.joblib
 practical05/results/models/
 lab05/artifacts/*.joblib
+
+# lab07: handoff archive is rebuilt by package_handoff.py
+lab07/dist/

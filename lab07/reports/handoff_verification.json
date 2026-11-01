@@ -1,0 +1,23 @@
+{
+  "archive": "lab07_handoff.zip",
+  "archive_sha256": "a440c4a116e2940e1b7bb38c4fd9f04f83a34ab46aef62f49cfdfad9b8a348f0",
+  "archive_bytes": 61601,
+  "python": "3.12.0",
+  "files_in_archive": 36,
+  "junk_entries": [],
+  "package_imported_from_extracted_copy": true,
+  "verify_exit": 0,
+  "verify_output": {
+    "manifest_ok": true,
+    "checked": 28
+  },
+  "predict_exit": 0,
+  "predict_probability": 0.7168759163903421,
+  "predict_abs_diff_vs_expected": 0.0,
+  "unittest_exit": 0,
+  "unittest_summary": [
+    "Ran 84 tests in 73.558s",
+    "OK (skipped=2)"
+  ],
+  "passed": true
+}

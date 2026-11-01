@@ -1,0 +1,6 @@
+M1 load model BEFORE hash check: exit=1 ['Ran 1 test in 0.196s', 'FAILED (failures=1)']
+M2 values taken in record order, not schema order: exit=1 ['Ran 1 test in 2.732s', 'FAILED (failures=1)']
+M3 out-of-range raises instead of warns: exit=1 ['Ran 1 test in 0.005s', 'FAILED (errors=1)']
+M4 bool accepted as number: exit=1 ['Ran 1 test in 0.005s', 'FAILED (failures=2)']
+M5 target mapping flipped (target==1 as malignant): exit=1 ['Ran 10 tests in 2.882s', 'FAILED (failures=5)']
+M6 extra features silently ignored: exit=1 ['Ran 1 test in 0.004s', 'FAILED (failures=1)']

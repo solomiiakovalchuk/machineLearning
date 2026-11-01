@@ -31,7 +31,7 @@ def collect() -> list[Path]:
     files = [ROOT / f for f in INCLUDE_FILES if (ROOT / f).is_file()]
     for d in INCLUDE_DIRS:
         for p in sorted((ROOT / d).rglob("*")):
-            if p.is_file() and not (SKIP_PARTS & set(p.parts)) and p.suffix != ".pyc" and p.name not in SKIP_NAMES:
+            if p.is_file() and not (SKIP_PARTS & set(p.parts)) and not any(x.endswith(".egg-info") for x in p.parts) and p.suffix != ".pyc" and p.name not in SKIP_NAMES:
                 files.append(p)
     return sorted(files)
 
@@ -63,6 +63,9 @@ def verify_extracted() -> dict:
             zf.extractall(tmp)
         proj = Path(tmp) / "lab07"
         result["files_in_archive"] = sum(1 for p in proj.rglob("*") if p.is_file())
+        result["junk_entries"] = sorted(p.relative_to(proj).as_posix() for p in proj.rglob("*")
+                                        if "__pycache__" in p.parts or p.suffix == ".pyc"
+                                        or any(x.endswith(".egg-info") for x in p.parts))
         env = dict(os.environ, PYTHONPATH=str(proj / "src"), PYTHONIOENCODING="utf-8")
         cfg = "configs/project_config.json"
         cli = [sys.executable, "-m", "ml_project.cli", "--config", cfg]
@@ -83,7 +86,7 @@ def verify_extracted() -> dict:
         code, out, err = run([sys.executable, "-m", "unittest", "discover", "-s", "tests"], proj, env)
         result["unittest_exit"] = code
         result["unittest_summary"] = [ln for ln in err.strip().splitlines() if ln.startswith(("Ran ", "OK", "FAILED"))]
-        result["passed"] = bool(result["package_imported_from_extracted_copy"] and result["verify_exit"] == 0
+        result["passed"] = bool(not result["junk_entries"] and result["package_imported_from_extracted_copy"] and result["verify_exit"] == 0
                                 and result["predict_exit"] == 0 and code == 0
                                 and result.get("predict_abs_diff_vs_expected", 1) <= 1e-12)
     return result
