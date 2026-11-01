@@ -1,0 +1,24 @@
+{
+  "config_version": "1.0",
+  "project_name": "lab07-breast-cancer-component",
+  "model_version": "1.0.0",
+  "schema_version": "1.0",
+  "positive_class": "malignant",
+  "negative_class": "benign",
+  "threshold": 0.5,
+  "max_batch_size": 1000,
+  "random_state": 42,
+  "numeric_tolerance": {
+    "probability_abs": 1e-12,
+    "metric_abs": 1e-9
+  },
+  "paths": {
+    "model": "models/pipeline.joblib",
+    "model_metadata": "models/model_metadata.json",
+    "schema": "configs/schema.json",
+    "frozen_decision": "configs/frozen_decision.json",
+    "inference_example": "configs/inference_example.json",
+    "split_ids": "data/split_ids.csv",
+    "manifest": "project_manifest.json"
+  }
+}

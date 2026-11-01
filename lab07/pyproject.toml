@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ml-project-lab07"
+version = "1.0.0"
+description = "Frozen, hash-verified breast cancer (malignant vs benign) classifier component"
+requires-python = ">=3.11"
+dependencies = ["numpy>=2.2,<3", "scipy>=1.15", "scikit-learn==1.9.0", "joblib>=1.5"]
+
+[project.scripts]
+ml-project = "ml_project.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

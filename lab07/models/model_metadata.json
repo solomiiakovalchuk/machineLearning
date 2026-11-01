@@ -1,0 +1,72 @@
+{
+  "model_version": "1.0.0",
+  "schema_version": "1.0",
+  "family": "lrl2",
+  "candidate_id": "automl_seed42_trial10",
+  "params": {
+    "C": 0.1,
+    "class_weight": null
+  },
+  "fixed_model_params": {
+    "max_iter": 5000,
+    "random_state": 42,
+    "solver": "lbfgs",
+    "penalty": "deprecated"
+  },
+  "pipeline": "SimpleImputer(median, keep_empty_features=True) -> StandardScaler -> LogisticRegression",
+  "positive_class": "malignant",
+  "negative_class": "benign",
+  "threshold": 0.5,
+  "model_sha256": "b63381332edb446557779d0d3042cd4e3be973cbc9fd70a1682513fe9abc315b",
+  "schema_sha256": "e7f6b5da6eb1e1f4df00ead9882ef01c10b9ee1306a3076c7629fcf80944bdf7",
+  "frozen_decision_sha256": "62caba19558d196bdefb4b1b459d8d6ba1809f5d1f0aa9b7450401380a5a584c",
+  "split_ids_sha256": "bf41aa64517e799c01bbe2fb0c9e106200d308255516506cbab35aac74d34a9b",
+  "data_reference": {
+    "raw_x_target_sha256": "25e2eb7b7a8745b1bde5ba18bc4969983d2e2f403291ecd5bde4a29ef30c3859",
+    "target_definition": "y = (load_breast_cancer().target == 0), 1 = malignant"
+  },
+  "reference_test_metrics": {
+    "source": "lab06/handoff/test_metrics.json",
+    "ap": 0.9965986394557824,
+    "n": 114,
+    "positive_n": 42,
+    "threshold": 0.5,
+    "confusion_matrix": [
+      [
+        72,
+        0
+      ],
+      [
+        2,
+        40
+      ]
+    ]
+  },
+  "environment": {
+    "python": "3.12.0",
+    "scikit-learn": "1.9.0",
+    "numpy": "2.2.3",
+    "scipy": "1.15.3",
+    "joblib": "1.6.0"
+  },
+  "trained_in_lab06_environment": {
+    "python": "3.12.0",
+    "sklearn": "1.9.0",
+    "numpy": "2.2.3",
+    "scipy": "1.15.3"
+  },
+  "source_handoff": {
+    "commit": "81445e2",
+    "directory": "lab06/handoff"
+  },
+  "intended_use": "Educational prototype: rank FNA records by probability of malignant for expert review.",
+  "limitations": [
+    "small single-source dataset of 569 FNA images; performance on other laboratories, scanners or populations is unverified",
+    "dataset was already seen in earlier course labs; the lab06 test part is untouched only within this experiment",
+    "random stratified split without patient or time grouping information; dependence between records cannot be excluded",
+    "fixed threshold 0.5; AP advantage does not guarantee recall advantage",
+    "limited 12-trial search budget per branch and per search",
+    "educational model; forbidden for diagnosis or clinical decisions",
+    "not a diagnostic tool; no calibration or drift monitoring"
+  ]
+}

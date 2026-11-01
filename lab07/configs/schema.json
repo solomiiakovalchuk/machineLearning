@@ -1,0 +1,225 @@
+{
+  "schema_version": "1.0",
+  "positive_class": "malignant",
+  "negative_class": "benign",
+  "target_mapping": "y=1 is malignant; sklearn load_breast_cancer target==0 (lab06 experiment.load_data)",
+  "order_required": true,
+  "finite_required": true,
+  "non_negative": true,
+  "out_of_range_policy": "warning",
+  "missing_policy": "reject",
+  "extra_policy": "reject",
+  "source": "lab06/handoff/data_schema.json",
+  "features": [
+    {
+      "name": "radius_mean",
+      "dtype": "float64",
+      "required": true,
+      "min": 6.981,
+      "max": 28.11
+    },
+    {
+      "name": "texture_mean",
+      "dtype": "float64",
+      "required": true,
+      "min": 9.71,
+      "max": 39.28
+    },
+    {
+      "name": "perimeter_mean",
+      "dtype": "float64",
+      "required": true,
+      "min": 43.79,
+      "max": 188.5
+    },
+    {
+      "name": "area_mean",
+      "dtype": "float64",
+      "required": true,
+      "min": 143.5,
+      "max": 2501.0
+    },
+    {
+      "name": "smoothness_mean",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.06251,
+      "max": 0.1634
+    },
+    {
+      "name": "compactness_mean",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.01938,
+      "max": 0.3454
+    },
+    {
+      "name": "concavity_mean",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.0,
+      "max": 0.4268
+    },
+    {
+      "name": "concave_points_mean",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.0,
+      "max": 0.2012
+    },
+    {
+      "name": "symmetry_mean",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.106,
+      "max": 0.304
+    },
+    {
+      "name": "fractal_dimension_mean",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.05024,
+      "max": 0.09744
+    },
+    {
+      "name": "radius_se",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.1115,
+      "max": 2.873
+    },
+    {
+      "name": "texture_se",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.3602,
+      "max": 4.885
+    },
+    {
+      "name": "perimeter_se",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.757,
+      "max": 21.98
+    },
+    {
+      "name": "area_se",
+      "dtype": "float64",
+      "required": true,
+      "min": 6.802,
+      "max": 542.2
+    },
+    {
+      "name": "smoothness_se",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.001713,
+      "max": 0.03113
+    },
+    {
+      "name": "compactness_se",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.002252,
+      "max": 0.1064
+    },
+    {
+      "name": "concavity_se",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.0,
+      "max": 0.396
+    },
+    {
+      "name": "concave_points_se",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.0,
+      "max": 0.05279
+    },
+    {
+      "name": "symmetry_se",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.007882,
+      "max": 0.07895
+    },
+    {
+      "name": "fractal_dimension_se",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.0008948,
+      "max": 0.02984
+    },
+    {
+      "name": "radius_worst",
+      "dtype": "float64",
+      "required": true,
+      "min": 7.93,
+      "max": 36.04
+    },
+    {
+      "name": "texture_worst",
+      "dtype": "float64",
+      "required": true,
+      "min": 12.02,
+      "max": 49.54
+    },
+    {
+      "name": "perimeter_worst",
+      "dtype": "float64",
+      "required": true,
+      "min": 50.41,
+      "max": 251.2
+    },
+    {
+      "name": "area_worst",
+      "dtype": "float64",
+      "required": true,
+      "min": 185.2,
+      "max": 4254.0
+    },
+    {
+      "name": "smoothness_worst",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.07117,
+      "max": 0.2226
+    },
+    {
+      "name": "compactness_worst",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.02729,
+      "max": 1.058
+    },
+    {
+      "name": "concavity_worst",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.0,
+      "max": 1.252
+    },
+    {
+      "name": "concave_points_worst",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.0,
+      "max": 0.291
+    },
+    {
+      "name": "symmetry_worst",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.1565,
+      "max": 0.6638
+    },
+    {
+      "name": "fractal_dimension_worst",
+      "dtype": "float64",
+      "required": true,
+      "min": 0.05504,
+      "max": 0.2075
+    }
+  ]
+}

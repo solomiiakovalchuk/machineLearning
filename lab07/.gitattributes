@@ -1,0 +1,2 @@
+# Hashed artifacts must keep their bytes on Windows and Linux.
+* -text
