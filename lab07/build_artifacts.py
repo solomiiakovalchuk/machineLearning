@@ -1,8 +1,8 @@
 """Accept the lab06 handoff and build every lab07 artifact (idempotent).
 
 Usage (from lab07/):  python build_artifacts.py [--handoff ../lab06/handoff]
-Stages: accept handoff -> copy/convert artifacts -> metadata.
-(rebuild check, reports and manifest are added by later stages of this script.)
+Stages: accept handoff -> copy/convert artifacts -> metadata -> rebuild check (reports/reproducibility.json)
+-> project_manifest.json (always LAST: it hashes the files written before it).
 """
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ import json
 import platform
 import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -38,6 +39,26 @@ def dump_json(path: Path, obj) -> None:
 
 def read_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+MANIFEST_FILES = ["models/pipeline.joblib", "models/model_metadata.json", "configs/project_config.json",
+                  "configs/schema.json", "configs/frozen_decision.json", "configs/inference_example.json",
+                  "data/split_ids.csv", "pyproject.toml", "requirements.txt", "build_artifacts.py",
+                  "reports/reproducibility.json", "reports/handoff_acceptance.json", "reports/model_card.md"]
+
+
+def write_manifest() -> None:
+    """Hash every key file as it is on disk NOW; must run after all other writes."""
+    files = list(MANIFEST_FILES)
+    files += sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "src" / "ml_project").glob("*.py"))
+    files += sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "tests").glob("*.py"))
+    present = [f for f in files if (ROOT / f).is_file()]
+    absent = [f for f in files if f not in present]
+    dump_json(ROOT / "project_manifest.json", {
+        "manifest_version": "1.0", "model_version": "1.0.0", "schema_version": "1.0",
+        "algorithm": "sha256", "not_covered": ["project_manifest.json itself", "README.md", "AI_USAGE.md",
+                                               "reports/test_results.txt", "notebook/", "figures/", "dist/"],
+        "files": {f: sha256_file(ROOT / f) for f in present}, "optional_absent_at_build": absent})
 
 
 def accept_handoff(handoff: Path):
@@ -161,6 +182,21 @@ def main() -> None:
     })
     dump_json(ROOT / "reports" / "handoff_acceptance.json", report)
     print("handoff accepted; control diff", report["control_reproduction_max_abs_diff"])
+
+    # 3. rebuild check: refit the frozen spec into a temp file and compare with the shipped model
+    from ml_project.train import rebuild_model
+    with tempfile.TemporaryDirectory() as tmp:
+        repro = rebuild_model(ROOT, Path(tmp) / "rebuilt.joblib")
+    repro["environment"] = {"python": platform.python_version(), "scikit-learn": sklearn.__version__,
+                            "numpy": np.__version__, "scipy": scipy.__version__, "joblib": joblib.__version__}
+    dump_json(ROOT / "reports" / "reproducibility.json", repro)
+    print("rebuild passed:", repro["passed"], "max |dp| test:", repro["max_abs_diff_saved_vs_rebuilt_test"])
+    if not repro["passed"]:
+        raise SystemExit("rebuild did not reproduce the saved model; manifest not written")
+
+    # 4. manifest last
+    write_manifest()
+    print("manifest written")
 
 
 if __name__ == "__main__":

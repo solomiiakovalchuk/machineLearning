@@ -1,0 +1,78 @@
+{
+  "family": "lrl2",
+  "candidate_id": "automl_seed42_trial10",
+  "params": {
+    "C": 0.1,
+    "class_weight": null
+  },
+  "n_train": 455,
+  "n_test": 114,
+  "train_test_disjoint": true,
+  "train_ids_sha256": "5b979f2bb48a56fb2db7a3b17c5a46e031f38c2fe88af303f8107e76277b3e70",
+  "rebuilt_sha256": "8b12baa9bf9c25ab02f7787e6fdb9ce2fbbe9c52da42a3ccdf79018e7627aa17",
+  "saved_sha256": "b63381332edb446557779d0d3042cd4e3be973cbc9fd70a1682513fe9abc315b",
+  "byte_identical_file": false,
+  "tolerances": {
+    "probability_abs": 1e-12,
+    "metric_abs": 1e-09
+  },
+  "control_records": {
+    "saved": [
+      0.7168759163903421,
+      0.010616676653026312,
+      0.01484657472201454
+    ],
+    "rebuilt": [
+      0.7168759163903421,
+      0.010616676653026312,
+      0.01484657472201454
+    ],
+    "expected": [
+      0.7168759163903421,
+      0.010616676653026312,
+      0.01484657472201454
+    ],
+    "max_abs_diff_saved_vs_rebuilt": 0.0,
+    "max_abs_diff_rebuilt_vs_expected": 0.0
+  },
+  "max_abs_diff_saved_vs_rebuilt_test": 0.0,
+  "max_abs_diff_saved_vs_rebuilt_all569": 0.0,
+  "max_abs_diff_coef": 0.0,
+  "abs_diff_intercept": 0.0,
+  "test_ap": {
+    "reference_lab06": 0.9965986394557824,
+    "saved": 0.9965986394557824,
+    "rebuilt": 0.9965986394557824,
+    "abs_diff_rebuilt_vs_reference": 0.0
+  },
+  "test_confusion_matrix": {
+    "reference_lab06": [
+      [
+        72,
+        0
+      ],
+      [
+        2,
+        40
+      ]
+    ],
+    "rebuilt": [
+      [
+        72,
+        0
+      ],
+      [
+        2,
+        40
+      ]
+    ]
+  },
+  "passed": true,
+  "environment": {
+    "python": "3.12.0",
+    "scikit-learn": "1.9.0",
+    "numpy": "2.2.3",
+    "scipy": "1.15.3",
+    "joblib": "1.6.0"
+  }
+}

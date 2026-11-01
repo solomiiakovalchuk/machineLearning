@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 
 from .config import ProjectConfig
-from .errors import ArtifactIntegrityError, ConfigError
+from .errors import ArtifactIntegrityError, ConfigError, InputValidationError
 from .integrity import sha256_file  # noqa: F401  (re-exported: part of the required interface)
 from .validation import SchemaValidator
 
@@ -117,6 +117,17 @@ class ProjectPredictor:
 
     def predict_batch(self, records) -> list:
         return self._respond(self._validator.validate_batch(records, self._config.max_batch_size))
+
+    def model_probabilities(self, matrix) -> np.ndarray:
+        """P(positive class) for an already validated n x n_features matrix (used by rebuild checks)."""
+        matrix = np.asarray(matrix, dtype=float)
+        if matrix.ndim != 2 or matrix.shape[1] != len(self._validator.feature_names):
+            raise InputValidationError("matrix must be n x n_features")
+        return self._model.predict_proba(matrix)[:, 1]
+
+    def model_steps(self) -> list:
+        """Fitted final estimator wrapped in a list (for numeric comparison only; not part of the public response)."""
+        return [self._model.steps[-1][1]]
 
     @property
     def validator(self) -> SchemaValidator:
