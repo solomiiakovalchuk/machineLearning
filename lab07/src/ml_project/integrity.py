@@ -8,6 +8,20 @@ from pathlib import Path
 from .errors import ArtifactIntegrityError
 
 
+def _no_duplicates(pairs):
+    seen = {}
+    for key, value in pairs:
+        if key in seen:
+            raise ValueError(f"duplicate key {key!r}")
+        seen[key] = value
+    return seen
+
+
+def strict_json_loads(text: str):
+    """json.loads that rejects duplicate object keys (the stdlib silently keeps the last one)."""
+    return json.loads(text, object_pairs_hook=_no_duplicates)
+
+
 def sha256_file(path) -> str:
     """SHA-256 hex digest of a file, read in chunks."""
     h = hashlib.sha256()

@@ -1,7 +1,6 @@
 """Input contract: named features in schema order; blocking errors vs diagnostic warnings."""
 from __future__ import annotations
 
-import json
 import math
 import numbers
 from dataclasses import dataclass
@@ -9,6 +8,7 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from .errors import BatchSizeError, ConfigError, InputValidationError
+from .integrity import strict_json_loads
 
 _MAX_LISTED = 5
 
@@ -47,7 +47,7 @@ class SchemaValidator:
     @classmethod
     def from_file(cls, path) -> "SchemaValidator":
         try:
-            return cls(json.loads(Path(path).read_text(encoding="utf-8")))
+            return cls(strict_json_loads(Path(path).read_text(encoding="utf-8")))
         except (OSError, ValueError) as exc:
             raise ConfigError(f"cannot read schema file: {Path(path).name}") from exc
 

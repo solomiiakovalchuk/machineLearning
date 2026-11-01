@@ -9,14 +9,14 @@ from pathlib import Path
 
 from .config import load_project_config
 from .errors import InputFileError, InputValidationError, ProjectError
-from .integrity import verify_manifest
+from .integrity import strict_json_loads, verify_manifest
 from .predictor import ProjectPredictor
 
 
 def _read_json_file(path: str):
     try:
         # json accepts NaN/Infinity literals; the validator rejects them as non-finite values.
-        return json.loads(Path(path).read_text(encoding="utf-8-sig"))
+        return strict_json_loads(Path(path).read_text(encoding="utf-8-sig"))
     except OSError as exc:
         raise InputFileError(f"cannot read input file: {Path(path).name}") from exc
     except ValueError as exc:

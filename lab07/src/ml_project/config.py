@@ -1,7 +1,6 @@
 """Project configuration: loading and validation into an immutable dataclass."""
 from __future__ import annotations
 
-import json
 import math
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath, PureWindowsPath
@@ -9,6 +8,7 @@ from types import MappingProxyType
 from typing import Mapping
 
 from .errors import ConfigError
+from .integrity import strict_json_loads
 
 REQUIRED_PATHS = ("model", "model_metadata", "schema", "frozen_decision",
                   "inference_example", "split_ids", "manifest")
@@ -61,7 +61,7 @@ def load_project_config(path) -> ProjectConfig:
     """
     config_path = Path(path)
     try:
-        raw = json.loads(config_path.read_text(encoding="utf-8"))
+        raw = strict_json_loads(config_path.read_text(encoding="utf-8"))
     except OSError as exc:
         raise ConfigError(f"cannot read config file: {config_path.name}") from exc
     except ValueError as exc:

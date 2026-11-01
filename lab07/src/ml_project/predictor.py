@@ -1,7 +1,6 @@
 """Stable inference interface over the frozen, hash-verified pipeline."""
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 
@@ -9,13 +8,13 @@ import numpy as np
 
 from .config import ProjectConfig
 from .errors import ArtifactIntegrityError, ConfigError, InputValidationError
-from .integrity import sha256_file  # noqa: F401  (re-exported: part of the required interface)
+from .integrity import sha256_file, strict_json_loads  # noqa: F401  (re-exported: part of the required interface)
 from .validation import SchemaValidator
 
 
 def _read_json(path: Path, what: str) -> dict:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        return strict_json_loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError) as exc:
         raise ArtifactIntegrityError(f"cannot read {what}") from exc
 

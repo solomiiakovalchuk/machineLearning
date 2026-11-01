@@ -125,6 +125,28 @@ class CliTests(unittest.TestCase):
                 r = run_cli("predict-batch", self.write(label + ".csv", text))
                 self.assertEqual(r.returncode, code, r.stderr)
 
+    def test_duplicate_json_keys_are_rejected_not_last_wins(self):
+        # json.loads keeps the LAST duplicate silently: the first (invalid) radius_mean would vanish.
+        rec = self.example["record"]
+        body = json.dumps(rec)
+        dup = body.replace("{", '{"radius_mean": 1000.0, ', 1)
+        r = run_cli("predict", self.write("dup.json", dup))
+        self.assertEqual(r.returncode, 4, r.stdout + r.stderr)
+        self.assertIn("duplicate key", r.stderr)
+        self.assertEqual(r.stdout, "")
+
+    def test_config_with_duplicate_key_is_rejected(self):
+        text = (self.tmp / "configs" / "project_config.json").read_text()
+        path = self.write("configs/project_config.json", text.replace('"threshold": 0.5,', '"threshold": 0.5, "threshold": 0.5,'))
+        r = run_cli("metadata", config=path)
+        self.assertEqual(r.returncode, 3, r.stderr)
+        self.assertIn("duplicate key", r.stderr)
+
+    def test_verify_command(self):
+        r = run_cli("verify")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertTrue(json.loads(r.stdout)["manifest_ok"])
+
     def test_validate_reports_out_of_range_warnings(self):
         rec = dict(self.example["record"], radius_mean=900.0)
         r = run_cli("validate", self.write("w.json", json.dumps(rec)))
