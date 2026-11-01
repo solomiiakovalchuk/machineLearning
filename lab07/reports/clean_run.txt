@@ -1,0 +1,53 @@
+# Clean run in a fresh venv (outside the repository), 2026-11-02
+python: Python 3.12.0
+## pip freeze
+cloudpickle==3.1.2
+joblib==1.6.0
+narwhals==2.28.0
+numpy==2.2.3
+scikit-learn==1.9.0
+scipy==1.15.3
+threadpoolctl==3.6.0
+## requirements.txt only + pip install -e .  (no pandas, matplotlib, flaml, xgboost, lightgbm in this venv)
+## import location
+D:\ХНУ\3kurs\МашНавчання\machine-learning-course\lab07\src\ml_project\__init__.py 1.9.0
+## verify
+{
+  "manifest_ok": true,
+  "checked": 28
+}
+## metadata (first 6 lines)
+{
+  "model_version": "1.0.0",
+  "model_sha256": "b63381332edb446557779d0d3042cd4e3be973cbc9fd70a1682513fe9abc315b",
+  "schema_version": "1.0",
+  "schema_sha256": "e7f6b5da6eb1e1f4df00ead9882ef01c10b9ee1306a3076c7629fcf80944bdf7",
+  "n_features": 30,
+## predict control example
+{
+  "probability": 0.7168759163903421,
+  "predicted_class": "malignant",
+  "threshold": 0.5,
+  "positive_class": "malignant",
+  "model_version": "1.0.0",
+  "schema_version": "1.0",
+  "warnings": []
+}
+## console script
+{
+  "count": 3,
+  "results": [
+    {
+      "probability": 0.7168759163903421,
+## unittest
+....................................................................................
+----------------------------------------------------------------------
+Ran 84 tests in 64.864s
+
+OK
+## rebuild
+    "rebuilt": [
+  "max_abs_diff_saved_vs_rebuilt_test": 0.0,
+    "rebuilt": 0.9965986394557824,
+    "rebuilt": [
+  "passed": true

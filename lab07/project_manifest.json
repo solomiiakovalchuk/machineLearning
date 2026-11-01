@@ -25,7 +25,7 @@
     "build_artifacts.py": "b7a735ed97c8dd08c6f51ca1a9b7ff89ca072681c7104074c3f55abfed148fcb",
     "reports/reproducibility.json": "16124c304bdfd05e0b372730fa5cefeb08e7567a7af24041958be540e8fc452b",
     "reports/handoff_acceptance.json": "d9e18283ecb190d7a300625cee7ab9d32e1291797d557a7ce9dd4fb0a57d7e92",
-    "reports/model_card.md": "e033d8755e8288f971603f764e402ea65ac63358b47c93115926bb32e84eda06",
+    "reports/model_card.md": "297116987d4922eaa5230d4af971b9135606561196d6d4e1d51fc503215af7ff",
     "src/ml_project/__init__.py": "4be33c9b533ac7006a51a69f8c1a832d0c14fa1b4a045c35ae401bc294d6ae10",
     "src/ml_project/cli.py": "bcf7596c4b049ffce0b8d8a203132ea035940f0075efaae9cf6d3ae1ee3e2289",
     "src/ml_project/config.py": "94439b555efe7e4a033b24dce91c256a028dbdcc5251ff5cff8ce23585438148",
