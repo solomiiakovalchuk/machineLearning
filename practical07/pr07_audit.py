@@ -681,7 +681,7 @@ def build_claims(F):
            {"name": "SHA-256 pipeline.joblib зафіксовано в пакеті", "key": "model_hash_recorded", "op": "true"}], None, 2)
     claim("C-06", "inference.py перевіряє контракт входу: 30 ознак у порядку схеми, скінченні, невід'ємні.",
           "lab06/handoff/inference.py; data_schema.json; MODEL_CARD.md",
-          "Негативні сценарії (13) для оригінального predict() у контрольному експерименті",
+          f"Негативні сценарії ({F['n_scenarios']}) для оригінального predict() у контрольному експерименті",
           [{"name": "некоректні значення/форма відхиляються", "key": "legacy_rejects_invalid_values", "op": "true"},
            {"name": "інший порядок полів виявляється", "key": "legacy_detects_reorder", "op": "true"},
            {"name": "значення поза train range супроводжується warning", "key": "legacy_warns_out_of_range", "op": "true"},
